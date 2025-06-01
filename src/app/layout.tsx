@@ -4,7 +4,7 @@ import './globals.css';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppFooter } from '@/components/layout/app-footer';
 import { Toaster } from '@/components/ui/toaster';
-import { EarlyAccessButton } from '@/components/shared/early-access-button';
+// import { EarlyAccessButton } from '@/components/shared/early-access-button';
 import { siteConfig } from '@/config/site';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { PageTransition } from '@/components/layout/page-transition';
@@ -73,7 +73,7 @@ export default function RootLayout({
             <AppFooter />
           </div>
           <Toaster />
-          <EarlyAccessButton />
+          {/* <EarlyAccessButton /> */}
         </ThemeProvider>
       </body>
     </html>
