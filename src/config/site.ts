@@ -12,7 +12,6 @@ export type SiteConfig = {
   ogImage: string;
   navItems: NavItem[];
   founderSocialLinks: {
-    twitter: string;
     github: string;
     linkedin: string;
   };
@@ -20,7 +19,7 @@ export type SiteConfig = {
 
 export const siteConfig: SiteConfig = {
   name: "Post My Property",
-  description: "The easiest way to list and find properties. Affordability, Simplicity, and Accessibility.",
+  description: "The easiest way to list and find properties. Affordability, Simplicity, and Accessibility. A minimal, fast, affordable property listing app designed for Hyderabad.",
   url: "https://postmyproperty.example.com", // Replace with actual URL
   ogImage: "https://postmyproperty.example.com/og.png", // Replace with actual OG image
   navItems: [
@@ -30,8 +29,7 @@ export const siteConfig: SiteConfig = {
     { title: "About", href: "/about" },
   ],
   founderSocialLinks: {
-    twitter: "https://twitter.com/johndoe_pmp",
-    github: "https://github.com/johndoe-pmp",
-    linkedin: "https://linkedin.com/in/johndoe-pmp",
+    github: "https://github.com/vamsee9",
+    linkedin: "https://www.linkedin.com/in/vamsee9",
   },
 };

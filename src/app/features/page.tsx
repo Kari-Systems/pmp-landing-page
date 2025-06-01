@@ -1,32 +1,56 @@
 
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FeatureCard } from "@/components/page-specific/features/feature-card";
-import { BadgeIndianRupee, Zap, Accessibility } from "lucide-react";
+import { BadgeIndianRupee, Zap, UsersRound, MapPin, ListChecks, UserMinus, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Features",
-  description: "Discover the powerful features of Post My Property: Affordability, Simplicity, and Accessibility.",
+  title: "Features - Why Post My Property?",
+  description: "Discover why Post My Property is the best choice: Simple 3-Step Process, Affordable Pricing, Hyperlocal Focus for Hyderabad, Built for Laymen, Speed, No Brokers, and Trusted & Transparent.",
 };
 
 const features = [
   {
+    icon: ListChecks,
+    title: "Simple 3-Step Process",
+    description: "Add → Post → Connect",
+    details: "No confusing filters, brokers, or paperwork. Get your property listed in minutes.",
+  },
+  {
     icon: BadgeIndianRupee,
-    title: "Affordability",
-    description: "Property Posting Made Easy.",
-    details: "Starting at ₹200/month. Transparent pricing with no hidden fees. Get the best value for listing your property.",
+    title: "Affordable Pricing",
+    description: "From just ₹200/month",
+    details: "Transparent pricing with no hidden commissions. The best value for your listing.",
+  },
+  {
+    icon: MapPin,
+    title: "Hyperlocal Focus",
+    description: "Built for Hyderabad",
+    details: "Starting with key colonies and localities, we understand the local market.",
+  },
+  {
+    icon: UsersRound,
+    title: "Built for Laymen",
+    description: "No Jargon, No Tech Hassle",
+    details: "Our platform is designed for everyone, regardless of technical skill. Anyone can use it.",
   },
   {
     icon: Zap,
-    title: "Simplicity",
-    description: "List in Minutes, Not Hours.",
-    details: "Our user-friendly interface allows you to create and manage listings effortlessly. Focus on what matters - selling or renting your property.",
+    title: "Built for Speed",
+    description: "Optimized & Instant",
+    details: "Optimized mobile performance, clean interface, and instant publishing of your listing.",
   },
   {
-    icon: Accessibility,
-    title: "Accessibility",
-    description: "Reach Everyone, Everywhere.",
-    details: "Our platform is designed to be accessible on all devices, ensuring your listing reaches the widest possible audience. Mobile-first and user-centric.",
+    icon: UserMinus,
+    title: "No Brokers, No Commissions",
+    description: "Direct Seller-to-Buyer",
+    details: "Connect directly with interested parties. We cut out the middlemen, saving you money.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Trusted & Transparent",
+    description: "Verified & Secure",
+    details: "We aim for only verified listings and provide secure OTP-based access for users.",
   },
 ];
 
@@ -35,6 +59,9 @@ export default function FeaturesPage() {
     <PageContainer>
       <Section id="features">
         <SectionTitle>Why Choose Post My Property?</SectionTitle>
+        <p className="text-center text-lg text-muted-foreground mb-12 max-w-3xl mx-auto">
+          Post My Property is engineered to be the simplest, fastest, and most affordable way to list your property in Hyderabad. We focus on what truly matters to sellers and buyers.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature) => (
             <FeatureCard

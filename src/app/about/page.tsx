@@ -2,53 +2,75 @@
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Lightbulb, Briefcase, Phone, Mail } from "lucide-react";
+import { Target, Eye, Lightbulb, Briefcase, Phone, Mail, Users, Settings, DollarSign, Map, UsersCog, Rocket } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Us",
-  description: "Learn about Post My Property's vision, mission, unique approach, founder, tech stack, and investment opportunities.",
+  title: "About Post My Property - Our Story & Vision",
+  description: "Learn about Post My Property: a minimal, fast, affordable property listing app for Hyderabad. Discover our mission, founder's journey, tech stack, and investment opportunities.",
 };
 
 const companyInfo = [
   {
     icon: Eye,
     title: "Our Vision",
-    description: "To be the most trusted and accessible platform for property listings in India, revolutionizing how people buy, sell, and rent properties."
+    description: "To be the simplest and most trusted hyperlocal platform for property listings in Hyderabad, revolutionizing how everyday people connect to buy, sell, and rent."
   },
   {
     icon: Target,
     title: "Our Mission",
-    description: "To empower property owners and seekers with simple, affordable, and effective digital tools, fostering transparent and efficient property transactions."
+    description: "To empower property owners and seekers in Hyderabad with a minimal, fast, and affordable mobile-first tool, cutting out middlemen, tech bloat, and complex flows."
   },
   {
     icon: Lightbulb,
     title: "Our Uniqueness",
-    description: "We focus on a streamlined user experience, transparent pricing, and cutting-edge technology to deliver unparalleled value, unlike complex and costly alternatives."
+    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, hyperlocal focus, transparent pricing (from ₹200/month), and direct seller-to-buyer connections, all built for speed and ease of use by a local engineer who understands the market."
   }
 ];
+
+const productTechStack = [
+  { category: "Frontend (Mobile App)", details: ["Flutter 3.7.0 – Cross-platform app development", "Riverpod – Robust state management", "Responsive layout, offline-friendly UX, and native feel"] },
+  { category: "Backend", details: ["Django 4.2 (Python)", "PostgreSQL 13 (Alpine) – Lightweight, reliable relational database", "REST API architecture", "Dockerized, production-ready microservices setup", "Nginx reverse proxy with HTTPS support", "Overpass API integration for locality and amenity metadata", "OTP-based authentication"] },
+  { category: "Infrastructure", details: ["Cloudflare for DNS, SSL (Full), and security", "DigitalOcean VPS – For backend hosting", "Firebase for internal tester invites and analytics", "CI/CD pipelines with GitHub Actions", "MailerLite / Postmark planned for transactional emails"] },
+];
+
+const landingPageTechStack = [
+  "Frontend: Next.js, React, TypeScript",
+  "Styling: Tailwind CSS, ShadCN UI",
+  "AI (Planned): Genkit for intelligent features",
+  "Hosting: Firebase App Hosting / Vercel",
+];
+
 
 export default function AboutPage() {
   return (
     <PageContainer>
-      <Section id="about-us">
-        <SectionTitle>About Post My Property</SectionTitle>
+      <Section id="about-summary" className="pt-8 pb-0 md:pt-12 md:pb-0">
+        <SectionTitle>Post My Property: Minimal, Fast, Affordable.</SectionTitle>
+         <p className="text-center text-xl text-muted-foreground -mt-8 mb-16 max-w-3xl mx-auto">
+          Designed for Hyderabad by a local engineer, our app cuts out middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message.
+        </p>
+      </Section>
+
+      <Section id="company-overview" className="py-0 md:py-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {companyInfo.map(info => (
-            <Card key={info.title} className="text-center shadow-lg hover:shadow-xl transition-shadow_transform hover:-translate-y-1">
-              <CardHeader>
+            <Card key={info.title} className="text-center shadow-lg hover:shadow-xl transition-shadow_transform hover:-translate-y-1 h-full flex flex-col">
+              <CardHeader className="items-center">
                 <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-3">
                   <info.icon className="h-8 w-8 text-primary" />
                 </div>
                 <CardTitle className="font-headline">{info.title}</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-grow">
                 <p className="text-muted-foreground">{info.description}</p>
               </CardContent>
             </Card>
           ))}
         </div>
+      </Section>
 
+      <Section id="founder-and-investment" className="pt-0 md:pt-0">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
             <FounderBio />
@@ -56,44 +78,85 @@ export default function AboutPage() {
           <div className="space-y-8">
             <Card className="shadow-lg">
               <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Briefcase className="h-6 w-6 text-primary" />
-                  <CardTitle className="font-headline">Investment &amp; Contact</CardTitle>
+                <div className="flex items-center gap-2 mb-1">
+                  <DollarSign className="h-7 w-7 text-primary" />
+                  <CardTitle className="font-headline">Capital &amp; Contact</CardTitle>
                 </div>
+                <CardDescription>We're seeking early-stage capital and strategic partnerships.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Capital Goals</h4>
-                  <p className="text-muted-foreground">We are currently seeking seed funding of ₹1 Crore to accelerate product development, expand our marketing efforts, and scale operations to serve a wider audience across India.</p>
+                  <h4 className="font-semibold text-lg mb-1">Capital Goals: ₹12–15 Lakhs INR (~$15K–$18K USD)</h4>
+                  <p className="text-muted-foreground text-sm mb-2">Use of Funds:</p>
+                  <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
+                    <li>Marketing & launch campaign in Hyderabad</li>
+                    <li>Map-based feature development</li>
+                    <li>Agent onboarding platform</li>
+                    <li>Dedicated web interface (responsive + dashboard)</li>
+                    <li>Team hiring (1–2 dev/design interns)</li>
+                  </ul>
                 </div>
+                <hr className="my-4"/>
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Get in Touch (Investors/Stakeholders)</h4>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Mail className="h-4 w-4" />
-                    <a href="mailto:invest@postmyproperty.example.com" className="hover:text-primary">invest@postmyproperty.example.com</a>
-                  </div>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Phone className="h-4 w-4" />
-                    <a href="tel:+919876543210" className="hover:text-primary">+91-9876543210</a>
+                  <h4 className="font-semibold text-lg mb-2">Get in Touch:</h4>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Phone className="h-4 w-4 flex-shrink-0" />
+                      <a href="tel:+919395151279" className="hover:text-primary text-sm">+91 9395151279 (India)</a>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Mail className="h-4 w-4 flex-shrink-0" />
+                      <a href="mailto:invest@postmyproperty.in" className="hover:text-primary text-sm">invest@postmyproperty.in (Investors/Partners)</a>
+                    </div>
+                     <div className="flex items-center gap-2 text-muted-foreground">
+                      <Mail className="h-4 w-4 flex-shrink-0" />
+                      <a href="mailto:vamsikrishna481998@gmail.com" className="hover:text-primary text-sm">vamsikrishna481998@gmail.com (Developer)</a>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="h-4 w-4 flex-shrink-0" />
+                      <span className="text-sm">Hyderabad, India</span>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
+
             <Card className="shadow-lg">
                <CardHeader>
-                <CardTitle className="font-headline">Tech Stack Highlights</CardTitle>
+                <div className="flex items-center gap-2">
+                   <Rocket className="h-6 w-6 text-primary" />
+                  <CardTitle className="font-headline">Core Product Technology</CardTitle>
+                </div>
+                 <CardDescription>The robust stack powering our mobile application and backend services.</CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                  <li><strong>Frontend:</strong> Next.js, React, TypeScript</li>
-                  <li><strong>Styling:</strong> Tailwind CSS, ShadCN UI</li>
-                  <li><strong>Backend:</strong> Node.js (planned for custom APIs)</li>
-                  <li><strong>Database:</strong> Firebase Firestore / Supabase (under evaluation)</li>
-                  <li><strong>Hosting:</strong> Vercel / Firebase Hosting</li>
-                </ul>
-                <p className="mt-2 text-sm text-muted-foreground">Our technology choices prioritize scalability, developer experience, and rapid iteration.</p>
+              <CardContent className="space-y-3">
+                {productTechStack.map(stack => (
+                  <div key={stack.category}>
+                    <h4 className="font-semibold text-md mb-1">{stack.category}</h4>
+                    <ul className="list-disc list-inside text-muted-foreground space-y-0.5 text-sm pl-2">
+                      {stack.details.map(detail => <li key={detail}>{detail}</li>)}
+                    </ul>
+                  </div>
+                ))}
               </CardContent>
             </Card>
+            
+            <Card className="shadow-lg">
+               <CardHeader>
+                 <div className="flex items-center gap-2">
+                    <Settings className="h-6 w-6 text-primary" />
+                    <CardTitle className="font-headline">Landing Page Tech</CardTitle>
+                 </div>
+                 <CardDescription>This website is built for performance and scalability.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
+                  {landingPageTechStack.map(item => <li key={item}>{item}</li>)}
+                </ul>
+                <p className="mt-2 text-xs text-muted-foreground">Our technology choices prioritize modern development practices, user experience, and rapid iteration.</p>
+              </CardContent>
+            </Card>
+            
           </div>
         </div>
       </Section>

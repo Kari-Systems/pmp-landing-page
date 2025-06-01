@@ -15,7 +15,7 @@ export function HeroSection() {
             <span className="text-primary">Your Listing, Simplified.</span>
           </h1>
           <p className="text-lg text-muted-foreground md:text-xl">
-            Reach thousands of potential buyers and renters with our easy-to-use platform. Affordable, simple, and accessible for everyone.
+            A minimal, fast, and affordable property listing app designed for Hyderabad. Cut out the middlemen and complex flows. Get started today!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transition-transform hover:scale-105">
@@ -33,11 +33,11 @@ export function HeroSection() {
         <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
            <Image
             src="https://placehold.co/1200x675.png"
-            alt="Modern home exterior"
+            alt="Modern home exterior in Hyderabad"
             layout="fill"
             objectFit="cover"
             className="transition-transform duration-500 hover:scale-105"
-            data-ai-hint="modern house exterior"
+            data-ai-hint="modern house hyderabad"
             priority
           />
         </div>

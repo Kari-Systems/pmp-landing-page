@@ -1,10 +1,10 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FilePlus2, Users, Handshake, Icon } from "lucide-react";
+import { FilePlus2, CreditCard, Send, PhoneForwarded, type LucideIcon } from "lucide-react";
 import React from "react";
 
 type Step = {
-  icon: Icon;
+  icon: LucideIcon;
   title: string;
   description: string;
 };
@@ -12,24 +12,29 @@ type Step = {
 const steps: Step[] = [
   {
     icon: FilePlus2,
-    title: "1. Create Your Listing",
-    description: "Easily create a detailed property listing in minutes with our intuitive form. Add photos, amenities, and all essential details effortlessly.",
+    title: "1. Create a Listing",
+    description: "Add your property details using our simple form — no tech skills needed.",
   },
   {
-    icon: Users,
-    title: "2. Reach Buyers & Renters",
-    description: "Your property gets immediate visibility to a wide and engaged audience actively searching for properties like yours.",
+    icon: CreditCard,
+    title: "2. Choose a Plan",
+    description: "Select from affordable posting plans starting at ₹200/month.",
   },
   {
-    icon: Handshake,
-    title: "3. Close the Deal",
-    description: "Connect directly with interested parties, manage inquiries efficiently, and close your deal faster. We make communication simple.",
+    icon: Send,
+    title: "3. Publish & Get Noticed",
+    description: "Your property becomes visible to buyers instantly in the Hyderabad region.",
+  },
+  {
+    icon: PhoneForwarded,
+    title: "4. Connect & Close",
+    description: "Buyers can directly connect with you via contact info (or via platform chat in a later version).",
   },
 ];
 
 export function StepsGuide() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {steps.map((step, index) => (
         <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow duration-300_transform hover:-translate-y-1">
           <CardHeader className="items-center text-center">
