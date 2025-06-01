@@ -2,7 +2,7 @@
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Lightbulb, Briefcase, Phone, Mail, Users, Settings, DollarSign, Map, UsersCog, Rocket } from "lucide-react";
+import { Target, Eye, Lightbulb, Briefcase, Phone, Mail, Users, Settings, DollarSign, MapPin, UsersCog, Rocket } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
