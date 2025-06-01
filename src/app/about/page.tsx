@@ -2,7 +2,7 @@
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Lightbulb, Briefcase, Phone, Mail, Users, Settings, DollarSign, MapPin, UsersCog, Rocket } from "lucide-react";
+import { Target, Eye, Lightbulb, Phone, Mail, Settings, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,9 +29,9 @@ const companyInfo = [
 ];
 
 const productTechStack = [
-  { category: "Frontend (Mobile App)", details: ["Flutter 3.7.0 – Cross-platform app development", "Riverpod – Robust state management", "Responsive layout, offline-friendly UX, and native feel"] },
-  { category: "Backend", details: ["Django 4.2 (Python)", "PostgreSQL 13 (Alpine) – Lightweight, reliable relational database", "REST API architecture", "Dockerized, production-ready microservices setup", "Nginx reverse proxy with HTTPS support", "Overpass API integration for locality and amenity metadata", "OTP-based authentication"] },
-  { category: "Infrastructure", details: ["Cloudflare for DNS, SSL (Full), and security", "DigitalOcean VPS – For backend hosting", "Firebase for internal tester invites and analytics", "CI/CD pipelines with GitHub Actions", "MailerLite / Postmark planned for transactional emails"] },
+  { category: "Mobile Application", details: ["Cross-platform development for wide accessibility.", "Intuitive user interface and smooth performance.", "Robust state management for a seamless experience."], icon: Smartphone },
+  { category: "Backend System", details: ["Scalable microservices architecture.", "Secure and reliable database management.", "Efficient API for fast data exchange."], icon: Server },
+  { category: "Cloud Infrastructure", details: ["Hosted on secure and dependable cloud servers.", "Ensuring high availability and data integrity.", "Protected by modern security measures."], icon: Cloud },
 ];
 
 const landingPageTechStack = [
@@ -129,11 +129,14 @@ export default function AboutPage() {
                 </div>
                  <CardDescription>The robust stack powering our mobile application and backend services.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
                 {productTechStack.map(stack => (
                   <div key={stack.category}>
-                    <h4 className="font-semibold text-md mb-1">{stack.category}</h4>
-                    <ul className="list-disc list-inside text-muted-foreground space-y-0.5 text-sm pl-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <stack.icon className="h-5 w-5 text-primary flex-shrink-0" />
+                      <h4 className="font-semibold text-md">{stack.category}</h4>
+                    </div>
+                    <ul className="list-disc list-inside text-muted-foreground space-y-0.5 text-sm pl-7">
                       {stack.details.map(detail => <li key={detail}>{detail}</li>)}
                     </ul>
                   </div>

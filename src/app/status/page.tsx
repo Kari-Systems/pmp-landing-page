@@ -3,9 +3,8 @@
 
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { AndroidTesterForm } from "@/components/page-specific/status/android-tester-form";
-import { TechStackTable } from "@/components/page-specific/status/tech-stack-table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, MailCheck, Rocket, ClipboardList, LayoutDashboard, ServerCog, CalendarClock, Construction } from "lucide-react";
+import { CheckCircle, MailCheck, Rocket, ClipboardList, LayoutDashboard, ServerCog } from "lucide-react";
 import React from "react";
 
 const mobileAppStatus = [
@@ -66,22 +65,9 @@ export default function StatusPage() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-12">
+        <div className="mt-12 flex justify-center">
           <div className="lg:col-span-1">
             <AndroidTesterForm />
-          </div>
-          <div className="lg:col-span-2 space-y-8">
-             <TechStackTable />
-             <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="font-headline text-center">Landing Page Styling</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-center">
-                  This landing page is built with Next.js and styled using Tailwind CSS with ShadCN UI components. This approach ensures a modern, responsive, and maintainable presentation layer for Post My Property.
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </Section>

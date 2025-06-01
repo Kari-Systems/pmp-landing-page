@@ -1,12 +1,12 @@
 
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FeatureCard } from "@/components/page-specific/features/feature-card";
-import { BadgeIndianRupee, Zap, UsersRound, MapPin, ListChecks, UserMinus, ShieldCheck } from "lucide-react";
+import { BadgeIndianRupee, Zap, UsersRound, MapPin, ListChecks, UserMinus, ShieldCheck, Smartphone, ShieldAlert, Accessibility } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Features - Why Post My Property?",
-  description: "Discover why Post My Property is the best choice: Simple 3-Step Process, Affordable Pricing, Hyperlocal Focus for Hyderabad, Built for Laymen, Speed, No Brokers, and Trusted & Transparent.",
+  description: "Discover why Post My Property is the best choice: Simple 3-Step Process, Affordable Pricing, Hyperlocal Focus for Hyderabad, Built for Laymen, Speed, No Brokers, Trusted & Transparent, Mobile Convenience, and Privacy.",
 };
 
 const features = [
@@ -29,7 +29,7 @@ const features = [
     details: "Starting with key colonies and localities, we understand the local market.",
   },
   {
-    icon: UsersRound,
+    icon: Accessibility, // Changed from UsersRound to be more specific / available
     title: "Built for Laymen",
     description: "No Jargon, No Tech Hassle",
     details: "Our platform is designed for everyone, regardless of technical skill. Anyone can use it.",
@@ -52,6 +52,18 @@ const features = [
     description: "Verified & Secure",
     details: "We aim for only verified listings and provide secure OTP-based access for users.",
   },
+  {
+    icon: Smartphone,
+    title: "Mobile-First Convenience",
+    description: "Manage listings on the go",
+    details: "List, update, and connect with buyers/renters directly from your smartphone, anytime, anywhere.",
+  },
+  {
+    icon: ShieldAlert,
+    title: "User Data Privacy",
+    description: "Your information is protected",
+    details: "We prioritize your privacy with secure data handling and give you control over your shared information.",
+  }
 ];
 
 export default function FeaturesPage() {
