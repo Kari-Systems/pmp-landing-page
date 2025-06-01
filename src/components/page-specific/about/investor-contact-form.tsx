@@ -20,6 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import emailjs from "@emailjs/browser";
+import { time } from "console";
 
 const investorContactSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -46,17 +48,35 @@ export function InvestorContactForm() {
 
   async function onSubmit(values: InvestorContactFormValues) {
     setIsLoading(true);
-    // Simulate API call for demonstration
-    // In a real app, you would send this data to your backend
-    console.log("Investor Contact Form Submitted:", values);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for your interest. We will get back to you soon.",
-    });
-    setIsLoading(false);
-    form.reset();
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "", // use env variable for EmailJS service ID
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "", // use env variable for EmailJS template ID
+        {
+          from_name: values.name,
+          from_email: values.email,
+          company: values.company,
+          time: new Date().toISOString(),
+          message: values.message,
+          to_email: "invest@postmyproperty.in",
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "" // use env variable for EmailJS public key
+      );
+
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for your interest. We will get back to you soon.",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Failed to send message",
+        description: "There was an error sending your message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (

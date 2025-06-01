@@ -11,6 +11,12 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { EarlyAccessDialog } from "@/components/shared/early-access-dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -33,72 +39,76 @@ export function AppHeader() {
                 href={item.href}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary",
-                  pathname === item.href
-                    ? "text-primary"
-                    : "text-foreground/60"
+                  pathname === item.href ? "text-primary" : "text-foreground/60"
                 )}
               >
                 {item.title}
               </Link>
             ))}
           </nav>
-          <div className="flex flex-1 items-center justify-end space-x-2">
-            <Button
-              variant="default"
-              size="sm"
-              className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
-              onClick={() => setDialogOpen(true)}
-            >
-              <Rocket className="mr-2 h-4 w-4" />
-              Join Early Access
-            </Button>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle Menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="pr-0">
-                <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
-                  <Home className="h-6 w-6 text-primary" />
-                  <span className="font-bold inline-block font-headline">
-                    {siteConfig.name}
-                  </span>
-                </Link>
-                <div className="flex flex-col space-y-3">
-                  {siteConfig.navItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "text-sm font-medium transition-colors hover:text-primary p-2 rounded-md",
-                        pathname === item.href
-                          ? "text-primary bg-muted"
-                          : "text-foreground/80"
-                      )}
-                    >
-                      {item.title}
-                    </Link>
-                  ))}
+          <div className="flex-1" />
+          <TooltipProvider>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <div>
                   <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => {
-                        // To close the sheet first, then open dialog.
-                        // No direct way to close Sheet from here, SheetTrigger manages its own state.
-                        // For a better UX, consider custom Sheet implementation or global state.
-                        setTimeout(() => setDialogOpen(true), 150); 
-                      }
-                    }
+                    variant="default"
+                    size="sm"
+                    className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+                    onClick={() => setDialogOpen(true)}
+                    disabled={true}
                   >
                     <Rocket className="mr-2 h-4 w-4" />
                     Join Early Access
                   </Button>
                 </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+              </TooltipTrigger>
+              <TooltipContent>Alpha Sign up, is coming soon!</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="pr-0">
+              <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
+                <Home className="h-6 w-6 text-primary" />
+                <span className="font-bold inline-block font-headline">
+                  {siteConfig.name}
+                </span>
+              </Link>
+              <div className="flex flex-col space-y-3">
+                {siteConfig.navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "text-sm font-medium transition-colors hover:text-primary p-2 rounded-md",
+                      pathname === item.href
+                        ? "text-primary bg-muted"
+                        : "text-foreground/80"
+                    )}
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+                <Button
+                  variant="outline"
+                  className="mt-4"
+                  disabled={true}
+                  onClick={() => {
+                    setTimeout(() => setDialogOpen(true), 150);
+                  }}
+                >
+                  <Rocket className="mr-2 h-4 w-4" />
+                  Join Early Access
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </header>
       <EarlyAccessDialog open={dialogOpen} onOpenChange={setDialogOpen} />

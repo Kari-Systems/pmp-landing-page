@@ -25,7 +25,7 @@ const companyInfo = [
   {
     icon: Lightbulb,
     title: "Our Uniqueness",
-    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, hyperlocal focus, transparent pricing (from ₹200/month), and direct seller-to-buyer connections, all built for speed and ease of use by a local engineer who understands the market."
+    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, hyperlocal focus, transparent pricing (from Rs. 200/month), and direct seller-to-buyer connections, all built for speed and ease of use by a local engineer who understands the market."
   }
 ];
 
@@ -88,7 +88,7 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Capital Goals: ₹12–15 Lakhs INR (~$15K–$18K USD)</h4>
+                  <h4 className="font-semibold text-lg mb-1">Capital Goals: Rs. 12–15 Lakhs INR (~$15K–$18K USD)</h4>
                   <p className="text-muted-foreground text-sm mb-2">Use of Funds:</p>
                   <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
                     <li>Marketing & launch campaign in Hyderabad</li>
@@ -145,7 +145,7 @@ export default function AboutPage() {
                 ))}
               </CardContent>
             </Card>
-            
+
             <Card className="shadow-lg">
                <CardHeader>
                  <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export default function AboutPage() {
                 <p className="mt-2 text-xs text-muted-foreground">Our technology choices prioritize modern development practices, user experience, and rapid iteration.</p>
               </CardContent>
             </Card>
-            
+
           </div>
         </div>
       </Section>

@@ -18,7 +18,7 @@ const steps: Step[] = [
   {
     icon: CreditCard,
     title: "2. Choose a Plan",
-    description: "Select from affordable posting plans starting at ₹200/month.",
+    description: "Select from affordable posting plans starting at Rs. 200/month.",
   },
   {
     icon: Send,

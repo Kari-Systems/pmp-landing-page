@@ -19,7 +19,7 @@ const features = [
   {
     icon: BadgeIndianRupee,
     title: "Affordable Pricing",
-    description: "From just ₹200/month",
+    description: "From just Rs. 200/month",
     details: "Transparent pricing with no hidden commissions. The best value for your listing.",
   },
   {

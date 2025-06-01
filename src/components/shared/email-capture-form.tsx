@@ -30,9 +30,16 @@ type EmailCaptureFormProps = {
   successMessage: string;
   ctaText: string;
   onSuccess?: () => void;
+  disabled?: boolean; // Add this line
 };
 
-export function EmailCaptureForm({ formId, successMessage, ctaText, onSuccess }: EmailCaptureFormProps) {
+export function EmailCaptureForm({
+  formId,
+  successMessage,
+  ctaText,
+  onSuccess,
+  disabled = false,
+}: EmailCaptureFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -46,7 +53,7 @@ export function EmailCaptureForm({ formId, successMessage, ctaText, onSuccess }:
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     console.log(`Form (${formId}) submitted with email:`, values.email);
     toast({
       title: "Success!",
@@ -69,11 +76,11 @@ export function EmailCaptureForm({ formId, successMessage, ctaText, onSuccess }:
             <FormItem>
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input 
-                  type="email" 
-                  placeholder="you@example.com" 
-                  {...field} 
-                  disabled={isLoading}
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  {...field}
+                  disabled={isLoading || disabled}
                   className="bg-background"
                 />
               </FormControl>
@@ -81,7 +88,11 @@ export function EmailCaptureForm({ formId, successMessage, ctaText, onSuccess }:
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isLoading || disabled}
+        >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {ctaText}
         </Button>

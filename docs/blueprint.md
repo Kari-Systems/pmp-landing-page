@@ -4,7 +4,7 @@
 
 - Home Section: Landing page with a hero section, clear call-to-action, and 3-step guide.
 - Status Page: Page for displaying app development progress, a form to collect emails of prospective Android testers, a table with the proposed stack (React.js/Next.js) to give visibility for the technical investors and a brief description about Tailwind usage for the components' look and feel. This section could incorporate dynamic status updates.
-- Features Explanation: Page highlighting affordability, simplicity, and accessibility through concise, benefit-driven language (e.g. Property Posting Made Easy; Starting at ₹200/month)
+- Features Explanation: Page highlighting affordability, simplicity, and accessibility through concise, benefit-driven language (e.g. Property Posting Made Easy; Starting at Rs. 200/month)
 - About Page: Comprehensive company-centric section with vision, mission, uniqueness, founder bio (with photo, social media links, brief history), tech stack, capital goals, and contact information (email/phone) for investors/stakeholders.
 - Global CTA Form: A floating "Join Early Access" button.
 
