@@ -1,7 +1,7 @@
 
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FeatureCard } from "@/components/page-specific/features/feature-card";
-import { BadgeIndianRupee, Zap, UniversalAccess } from "lucide-react";
+import { BadgeIndianRupee, Zap, Accessibility } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ const features = [
     details: "Our user-friendly interface allows you to create and manage listings effortlessly. Focus on what matters - selling or renting your property.",
   },
   {
-    icon: UniversalAccess,
+    icon: Accessibility,
     title: "Accessibility",
     description: "Reach Everyone, Everywhere.",
     details: "Our platform is designed to be accessible on all devices, ensuring your listing reaches the widest possible audience. Mobile-first and user-centric.",

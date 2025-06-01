@@ -1,3 +1,4 @@
+"use client";
 
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { AndroidTesterForm } from "@/components/page-specific/status/android-tester-form";
@@ -5,13 +6,7 @@ import { TechStackTable } from "@/components/page-specific/status/tech-stack-tab
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
-import type { Metadata } from "next";
 import React from "react";
-
-export const metadata: Metadata = {
-  title: "Development Status",
-  description: "Track the development progress of Post My Property, join our Android beta, and see our tech stack.",
-};
 
 const completedFeatures = [
   "Core Platform Design",
