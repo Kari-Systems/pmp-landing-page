@@ -14,7 +14,7 @@ export function EarlyAccessButton() {
       <Button
         variant="default"
         size="lg"
-        className="fixed bottom-20 right-6 z-50 shadow-lg rounded-full animate-pulse bg-primary hover:bg-primary/90 text-primary-foreground md:bottom-8 md:right-8"
+        className="fixed bottom-32 right-6 z-50 shadow-lg rounded-full animate-pulse bg-primary hover:bg-primary/90 text-primary-foreground md:bottom-28 md:right-8"
         onClick={() => setDialogOpen(true)}
       >
         <Rocket className="mr-2 h-5 w-5" />
@@ -24,3 +24,4 @@ export function EarlyAccessButton() {
     </>
   );
 }
+
