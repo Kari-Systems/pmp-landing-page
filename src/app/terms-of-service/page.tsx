@@ -1,19 +1,30 @@
 
+"use client";
+
+import React from "react";
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "Terms of Service for Post My Property.",
-};
+// Note: Metadata export is not allowed in client components.
+// Consider moving this to a server component parent or layout if page-specific metadata is crucial.
+// export const metadata: Metadata = {
+//   title: "Terms of Service",
+//   description: "Terms of Service for Post My Property.",
+// };
 
 export default function TermsOfServicePage() {
+  const [lastUpdated, setLastUpdated] = React.useState('');
+
+  React.useEffect(() => {
+    setLastUpdated(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  }, []);
+
   return (
     <PageContainer>
       <Section id="terms-of-service">
         <SectionTitle>Terms of Service</SectionTitle>
         <div className="prose dark:prose-invert max-w-none mx-auto">
-          <p>Last updated: {new Date().toLocaleDateString()}</p>
+          {lastUpdated && <p>Last updated: {lastUpdated}</p>}
 
           <h2>1. Agreement to Terms</h2>
           <p>By using our services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.</p>

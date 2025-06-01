@@ -1,19 +1,30 @@
 
+"use client";
+
+import React from "react";
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Privacy Policy for Post My Property.",
-};
+// Note: Metadata export is not allowed in client components. 
+// Consider moving this to a server component parent or layout if page-specific metadata is crucial.
+// export const metadata: Metadata = {
+//   title: "Privacy Policy",
+//   description: "Privacy Policy for Post My Property.",
+// };
 
 export default function PrivacyPolicyPage() {
+  const [lastUpdated, setLastUpdated] = React.useState('');
+
+  React.useEffect(() => {
+    setLastUpdated(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  }, []);
+
   return (
     <PageContainer>
       <Section id="privacy-policy">
         <SectionTitle>Privacy Policy</SectionTitle>
         <div className="prose dark:prose-invert max-w-none mx-auto">
-          <p>Last updated: {new Date().toLocaleDateString()}</p>
+          {lastUpdated && <p>Last updated: {lastUpdated}</p>}
           
           <h2>1. Introduction</h2>
           <p>Welcome to Post My Property (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us at privacy@postmyproperty.example.com.</p>

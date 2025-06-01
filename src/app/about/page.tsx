@@ -1,6 +1,7 @@
 
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
+import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, Eye, Lightbulb, Phone, Mail, Settings, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud } from "lucide-react";
 import type { Metadata } from "next";
@@ -29,9 +30,9 @@ const companyInfo = [
 ];
 
 const productTechStack = [
-  { category: "Mobile Application", details: ["Cross-platform development for wide accessibility.", "Intuitive user interface and smooth performance.", "Robust state management for a seamless experience."], icon: Smartphone },
-  { category: "Backend System", details: ["Scalable microservices architecture.", "Secure and reliable database management.", "Efficient API for fast data exchange."], icon: Server },
-  { category: "Cloud Infrastructure", details: ["Hosted on secure and dependable cloud servers.", "Ensuring high availability and data integrity.", "Protected by modern security measures."], icon: Cloud },
+  { category: "Mobile Application", details: ["Cross-platform development for wide accessibility (Flutter).", "Intuitive user interface and smooth performance with robust state management (Riverpod).", "Offline-friendly UX and native feel."], icon: Smartphone },
+  { category: "Backend System", details: ["Scalable microservices architecture (Django/Python).", "Secure and reliable relational database (PostgreSQL).", "Efficient REST API for fast data exchange, with OTP-based authentication."], icon: Server },
+  { category: "Cloud Infrastructure", details: ["Hosted on secure and dependable cloud servers (DigitalOcean VPS).", "Ensuring high availability, data integrity, and security (Cloudflare DNS/SSL).", "CI/CD pipelines and planned email services."], icon: Cloud },
 ];
 
 const landingPageTechStack = [
@@ -55,7 +56,7 @@ export default function AboutPage() {
       <Section id="company-overview" className="py-0 md:py-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {companyInfo.map(info => (
-            <Card key={info.title} className="text-center shadow-lg hover:shadow-xl transition-shadow_transform hover:-translate-y-1 h-full flex flex-col">
+            <Card key={info.title} className="text-center shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 h-full flex flex-col">
               <CardHeader className="items-center">
                 <div className="mx-auto p-3 bg-primary/10 rounded-full w-fit mb-3">
                   <info.icon className="h-8 w-8 text-primary" />
@@ -74,6 +75,7 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
             <FounderBio />
+            <InvestorContactForm />
           </div>
           <div className="space-y-8">
             <Card className="shadow-lg">
