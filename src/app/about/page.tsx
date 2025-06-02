@@ -3,12 +3,12 @@ import { PageContainer, Section, SectionTitle } from "@/components/layout/page-c
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Lightbulb, Phone, Mail, Settings, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud } from "lucide-react";
+import { Target, Eye, Lightbulb, Phone, Mail, Settings, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Post My Property - Our Story & Vision",
-  description: "Learn about Post My Property: a minimal, fast, affordable property listing app for Hyderabad. Discover our mission, founder's journey, tech stack, and investment opportunities.",
+  title: "About Post My Property - Our Story, Vision & Investment Opportunity",
+  description: "Discover Post My Property: a minimal, fast, affordable property listing app for Hyderabad. Learn about our mission, founder, technology, capital goals, and how we're creating investor value.",
 };
 
 const companyInfo = [
@@ -25,14 +25,8 @@ const companyInfo = [
   {
     icon: Lightbulb,
     title: "Our Uniqueness",
-    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, hyperlocal focus, transparent pricing (from Rs. 200/month), and direct seller-to-buyer connections, all built for speed and ease of use by a local engineer who understands the market."
+    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, hyperlocal focus, transparent pricing (from ₹200/month), and direct seller-to-buyer connections. Our lean model and scalable tech are poised for rapid growth and profitability."
   }
-];
-
-const productTechStack = [
-  { category: "Mobile Application", details: ["Cross-platform development for wide accessibility (Flutter).", "Intuitive user interface and smooth performance with robust state management (Riverpod).", "Offline-friendly UX and native feel."], icon: Smartphone },
-  { category: "Backend System", details: ["Scalable microservices architecture (Django/Python).", "Secure and reliable relational database (PostgreSQL).", "Efficient REST API for fast data exchange, with OTP-based authentication."], icon: Server },
-  { category: "Cloud Infrastructure", details: ["Hosted on secure and dependable cloud servers (DigitalOcean VPS).", "Ensuring high availability, data integrity, and security (Cloudflare DNS/SSL).", "CI/CD pipelines and planned email services."], icon: Cloud },
 ];
 
 const landingPageTechStack = [
@@ -49,7 +43,7 @@ export default function AboutPage() {
       <Section id="about-summary" className="pt-8 pb-0 md:pt-12 md:pb-0">
         <SectionTitle>Post My Property: Minimal, Fast, Affordable.</SectionTitle>
          <p className="text-center text-xl text-muted-foreground -mt-8 mb-16 max-w-3xl mx-auto">
-          Designed for Hyderabad by a local engineer, our app cuts out middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message.
+          Designed for Hyderabad by a local engineer, our app cuts out middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message. We're building a scalable business with strong profit potential.
         </p>
       </Section>
 
@@ -88,7 +82,7 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Capital Goals: Rs. 12–15 Lakhs INR (~$15K–$18K USD)</h4>
+                  <h4 className="font-semibold text-lg mb-1">Capital Goals: ₹12–15 Lakhs INR (~$15K–$18K USD)</h4>
                   <p className="text-muted-foreground text-sm mb-2">Use of Funds:</p>
                   <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
                     <li>Marketing & launch campaign in Hyderabad</li>
@@ -124,25 +118,77 @@ export default function AboutPage() {
             </Card>
 
             <Card className="shadow-lg">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-1">
+                  <TrendingUp className="h-7 w-7 text-primary" />
+                  <CardTitle className="font-headline">Investor Value &amp; Profitability</CardTitle>
+                </div>
+                <CardDescription>A lean, scalable model targeting a high-growth market for attractive returns.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  Post My Property offers a compelling investment opportunity driven by a lean operational model and a clear path to profitability. Our affordable subscription (starting at just ₹200/month) is designed to attract a high volume of users within Hyderabad's booming real estate sector.
+                </p>
+                <p className="font-semibold text-foreground/90">Key drivers for investor returns:</p>
+                <ul className="list-disc list-inside space-y-1.5 pl-4">
+                  <li>
+                    <strong>Scalable Revenue Model:</strong> Low customer acquisition cost coupled with recurring subscription revenue creates a strong foundation for exponential growth.
+                  </li>
+                  <li>
+                    <strong>Large Addressable Market:</strong> Hyderabad's dynamic property market presents a vast pool of potential users.
+                  </li>
+                  <li>
+                    <strong>Low Operational Overheads:</strong> Our efficient tech stack and streamlined processes ensure cost-effectiveness, maximizing profit margins as we scale.
+                  </li>
+                  <li>
+                    <strong>Future Monetization:</strong> Beyond subscriptions, we envision future revenue streams through premium listings, agent partnerships, and value-added services.
+                  </li>
+                </ul>
+                <p className="font-semibold text-foreground pt-1">
+                  Your investment will directly fuel strategic marketing and feature development, accelerating user adoption and solidifying our market position for substantial long-term returns.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-lg">
                <CardHeader>
                 <div className="flex items-center gap-2">
                    <Rocket className="h-6 w-6 text-primary" />
-                  <CardTitle className="font-headline">Core Product Technology</CardTitle>
+                  <CardTitle className="font-headline">Built for Growth: Our Technology</CardTitle>
                 </div>
-                 <CardDescription>The robust stack powering our mobile application and backend services.</CardDescription>
+                 <CardDescription>Engineered for speed, scale, and a seamless user experience, paving the way for market leadership.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {productTechStack.map(stack => (
-                  <div key={stack.category}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <stack.icon className="h-5 w-5 text-primary flex-shrink-0" />
-                      <h4 className="font-semibold text-md">{stack.category}</h4>
-                    </div>
-                    <ul className="list-disc list-inside text-muted-foreground space-y-0.5 text-sm pl-7">
-                      {stack.details.map(detail => <li key={detail}>{detail}</li>)}
-                    </ul>
+              <CardContent className="space-y-5">
+                <div>
+                  <div className="flex items-start gap-3 mb-1">
+                    <Smartphone className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+                    <h4 className="font-semibold text-md">Intuitive Mobile-First Platform</h4>
                   </div>
-                ))}
+                  <p className="text-muted-foreground text-sm ml-[36px]">
+                    Our app provides a remarkably simple and fast experience. We've prioritized ease-of-use, ensuring anyone can list a property in minutes.
+                    <span className="block text-xs text-primary/80 mt-1">Leveraging modern cross-platform technology for wide reach and agile development.</span>
+                  </p>
+                </div>
+                <div>
+                  <div className="flex items-start gap-3 mb-1">
+                    <Server className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+                    <h4 className="font-semibold text-md">Scalable & Secure Backend</h4>
+                  </div>
+                  <p className="text-muted-foreground text-sm ml-[36px]">
+                    The engine of Post My Property is built to grow. It's designed for high performance and robust security, protecting user data and ensuring reliable service.
+                    <span className="block text-xs text-primary/80 mt-1">Utilizing proven, enterprise-grade backend solutions for stability and efficiency.</span>
+                  </p>
+                </div>
+                <div>
+                  <div className="flex items-start gap-3 mb-1">
+                    <Cloud className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+                    <h4 className="font-semibold text-md">Reliable Cloud Infrastructure</h4>
+                  </div>
+                  <p className="text-muted-foreground text-sm ml-[36px]">
+                    We operate on a dependable cloud foundation, guaranteeing high availability and consistent performance, so the platform is always accessible.
+                    <span className="block text-xs text-primary/80 mt-1">Industry-standard cloud architecture ensures uptime and data integrity.</span>
+                  </p>
+                </div>
               </CardContent>
             </Card>
 

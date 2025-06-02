@@ -10,8 +10,7 @@ export function FounderBio() {
   const founder = {
     name: "Vamsi Krishna Kari",
     title: "Frontend Software Engineer & Founder",
-    photoUrl: "https://placehold.co/250x250.png",
-    aiHint: "professional portrait software engineer",
+    photoUrl: "https://avatars.githubusercontent.com/u/46225107?v=4",
     bio: "I’m Vamsi Krishna Kari, a Frontend Software Engineer from Hyderabad with over 2 years of professional experience and a passion for simplifying user journeys through great UI/UX. Over time, I’ve worked with companies like Claranet and Saven Technologies, where I migrated large-scale apps from Angular to React, optimized web performance, and led component design systems. But more than just code, I believe in building tools that genuinely help people — and that’s what led me to Post My Property.",
     history: "In late 2024, after witnessing how difficult and intimidating it was for everyday people — especially non-technical property owners — to post, sell, or even get discovered in the real estate ecosystem, I decided to build something different. Something simpler. Bootstrapped entirely on my own savings, I took a break from full-time work and began designing Post My Property — a lightweight, mobile-first platform built with the average seller in mind. I wasn’t backed by a company. I didn’t have a team. But I had a clear goal: make property posting as easy as sending a WhatsApp message.",
   };
@@ -31,7 +30,6 @@ export function FounderBio() {
               alt={founder.name}
               layout="fill"
               objectFit="cover"
-              data-ai-hint={founder.aiHint}
             />
           </div>
           <CardTitle className="text-3xl font-bold font-headline">{founder.name}</CardTitle>
