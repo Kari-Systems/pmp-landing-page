@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Home, Rocket } from "lucide-react";
+import { Menu, Rocket } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -17,20 +17,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { SiteLogo } from "@/components/shared/SiteLogo"; // Import the SiteLogo component
 
 export function AppHeader() {
   const pathname = usePathname();
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [sheetOpen, setSheetOpen] = React.useState(false); // State for mobile menu sheet
 
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 max-w-screen-2xl items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Home className="h-6 w-6 text-primary" />
-            <span className="font-bold inline-block font-headline">
-              {siteConfig.name}
-            </span>
+            <SiteLogo className="h-7 w-auto" /> {/* Use SiteLogo here */}
           </Link>
           <nav className="hidden md:flex gap-6 items-center">
             {siteConfig.navItems.map((item) => (
@@ -56,17 +55,16 @@ export function AppHeader() {
                     size="sm"
                     className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
                     onClick={() => setDialogOpen(true)}
-                    disabled={true}
                   >
                     <Rocket className="mr-2 h-4 w-4" />
                     Join Early Access
                   </Button>
                 </div>
               </TooltipTrigger>
-              <TooltipContent>Alpha Sign up, is coming soon!</TooltipContent>
+              <TooltipContent>Alpha Sign up is available!</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <Sheet>
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
@@ -74,17 +72,15 @@ export function AppHeader() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
-              <Link href="/" className="mr-6 flex items-center space-x-2 mb-6">
-                <Home className="h-6 w-6 text-primary" />
-                <span className="font-bold inline-block font-headline">
-                  {siteConfig.name}
-                </span>
+              <Link href="/" className="mr-6 flex items-center space-x-2 mb-6" onClick={() => setSheetOpen(false)}>
+                <SiteLogo className="h-7 w-auto" /> {/* Use SiteLogo in mobile menu */}
               </Link>
               <div className="flex flex-col space-y-3">
                 {siteConfig.navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={() => setSheetOpen(false)}
                     className={cn(
                       "text-sm font-medium transition-colors hover:text-primary p-2 rounded-md",
                       pathname === item.href
@@ -96,11 +92,11 @@ export function AppHeader() {
                   </Link>
                 ))}
                 <Button
-                  variant="outline"
-                  className="mt-4"
-                  disabled={true}
+                  variant="default" // Changed to default to match desktop
+                  className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground"
                   onClick={() => {
-                    setTimeout(() => setDialogOpen(true), 150);
+                    setSheetOpen(false); // Close sheet first
+                    setTimeout(() => setDialogOpen(true), 150); // Then open dialog
                   }}
                 >
                   <Rocket className="mr-2 h-4 w-4" />

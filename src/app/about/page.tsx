@@ -3,7 +3,7 @@ import { PageContainer, Section, SectionTitle } from "@/components/layout/page-c
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
+import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin as LocationPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react"; // Renamed MapPin to LocationPin to avoid conflict if MapPin is used differently locally
 import type { Metadata } from "next";
 import { AnimatedScrollArrow } from "@/components/shared/animated-scroll-arrow";
 
@@ -26,7 +26,7 @@ const companyInfo = [
   {
     icon: Lightbulb,
     title: "Our Uniqueness",
-    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, transparent pricing (from ₹200/month), and direct seller-to-buyer connections. Initially focused hyperlocally on Hyderabad, our lean model and scalable technology are engineered for rapid growth. We are actively working to expand our services to other key cities and states in phases, driven by user adoption and community feedback, demonstrating our commitment to broader market penetration."
+    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, transparent pricing (from Rs. 200/month), and direct seller-to-buyer connections. Initially focused hyperlocally on Hyderabad, our lean model and scalable technology are engineered for rapid growth. We are actively working to expand our services to other key cities and states in phases, driven by user adoption and community feedback, demonstrating our commitment to broader market penetration."
   }
 ];
 
@@ -76,7 +76,7 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-lg mb-1">Capital Goals: ₹12–15 Lakhs INR (~$15K–$18K USD)</h4>
+                  <h4 className="font-semibold text-lg mb-1">Capital Goals: Rs. 12–15 Lakhs INR (~$15K–$18K USD)</h4>
                   <p className="text-muted-foreground text-sm mb-2">Use of Funds:</p>
                   <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
                     <li>Marketing & launch campaign in Hyderabad</li>
@@ -103,7 +103,7 @@ export default function AboutPage() {
                       <a href="mailto:vamsikrishna481998@gmail.com" className="hover:text-primary text-sm">vamsikrishna481998@gmail.com (Developer)</a>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <MapPin className="h-4 w-4 flex-shrink-0" />
+                      <LocationPin className="h-4 w-4 flex-shrink-0" />
                       <span className="text-sm">Hyderabad, India</span>
                     </div>
                   </div>
@@ -121,7 +121,7 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-muted-foreground">
                 <p>
-                  Post My Property offers a compelling investment opportunity driven by a lean operational model and a clear path to profitability. Our affordable subscription (starting at just ₹200/month) is designed to attract a high volume of users within Hyderabad's booming real estate sector.
+                  Post My Property offers a compelling investment opportunity driven by a lean operational model and a clear path to profitability. Our affordable subscription (starting at just Rs. 200/month) is designed to attract a high volume of users within Hyderabad's booming real estate sector.
                 </p>
                 <p className="font-semibold text-foreground/90">Key drivers for investor returns:</p>
                 <ul className="list-disc list-inside space-y-1.5 pl-4">

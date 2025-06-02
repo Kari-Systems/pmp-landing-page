@@ -1,7 +1,7 @@
 
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FeatureCard } from "@/components/page-specific/features/feature-card";
-import { BadgeIndianRupee, Zap, UsersRound, MapPin, ListChecks, UserMinus, ShieldCheck, Smartphone, ShieldAlert, Accessibility } from "lucide-react";
+import { BadgeIndianRupee, Zap, Accessibility, ListChecks, MapPin, UserMinus, ShieldCheck, Smartphone, ShieldAlert } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ const features = [
     details: "Starting with key colonies and localities, we understand the local market.",
   },
   {
-    icon: Accessibility, // Changed from UsersRound to be more specific / available
+    icon: Accessibility,
     title: "Built for Laymen",
     description: "No Jargon, No Tech Hassle",
     details: "Our platform is designed for everyone, regardless of technical skill. Anyone can use it.",
