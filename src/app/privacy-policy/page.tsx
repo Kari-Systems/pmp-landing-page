@@ -3,11 +3,6 @@
 
 import React from "react";
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
-// Metadata export is not allowed in client components.
-// export const metadata: Metadata = {
-//   title: "Privacy Policy",
-//   description: "Privacy Policy for Post My Property.",
-// };
 
 export default function PrivacyPolicyPage() {
   const [lastUpdated, setLastUpdated] = React.useState('');

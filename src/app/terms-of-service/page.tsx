@@ -3,11 +3,6 @@
 
 import React from "react";
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
-// Metadata export is not allowed in client components.
-// export const metadata: Metadata = {
-//   title: "Terms of Service",
-//   description: "Terms of Service for Post My Property.",
-// };
 
 export default function TermsOfServicePage() {
   const [lastUpdated, setLastUpdated] = React.useState('');

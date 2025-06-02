@@ -1,70 +1,83 @@
 
-import type { SVGProps } from 'react';
+import type { HTMLAttributes } from 'react';
+import { Home } from 'lucide-react';
+import { siteConfig } from '@/config/site';
+import { cn } from '@/lib/utils';
 
-interface SiteLogoProps extends SVGProps<SVGSVGElement> {
-  // You can add specific props if needed, e.g., for different sizes or color schemes
+interface SiteLogoProps extends HTMLAttributes<HTMLElement> {
+  // className will be passed for overall component sizing (e.g., "h-7", "h-6 w-auto")
 }
 
-/**
- * SiteLogo component.
- *
- * **To use your own SVG logo:**
- * 1. **Replace the entire content *inside* the <svg>...</svg> tag below with your SVG code.**
- *    The existing placeholder `<rect>` and `<text>` elements are there as a temporary visual.
- *    Your actual logo (e.g., <path>, <circle>, etc.) should go here.
- * 2. Ensure your SVG has a `viewBox` attribute that accurately reflects its coordinate system for proper scaling.
- * 3. Adjust the default `width` and `height` via className props (e.g., "h-7 w-auto") or by modifying the SVG attributes if needed.
- *
- * **How the "Fallback" Works:**
- * The placeholder SVG (the "PMP LOGO" box) currently in this file *is* the fallback.
- * If you don't modify this file, this placeholder will be displayed. To show your logo,
- * you must edit this file and insert your SVG code as described above.
- *
- * **Dimension Guidance:**
- * - For Header: A height of approx. 28px (h-7) is used. Width will scale automatically based on your SVG's aspect ratio.
- *   Example usage: <SiteLogo className="h-7 w-auto" />
- * - For Footer: A height of approx. 24px (h-6) is used.
- *   Example usage: <SiteLogo className="h-6 w-auto" />
- *
- * **Accessibility:**
- * The `aria-labelledby` and `role="img"` attributes along with the `<title>` tag are included
- * for better accessibility. Ensure the title accurately describes your logo.
- *
- * **Styling:**
- * You can control the SVG's color via Tailwind text color classes (e.g., `text-primary`)
- * if your SVG is designed to inherit `currentColor` for its `fill` or `stroke` attributes.
- * The placeholder SVG uses `hsl(var(--primary))` and `hsl(var(--primary-foreground))` directly.
- * Adapt your SVG's fill/stroke attributes as needed for your specific design.
- */
+// !!! IMPORTANT FOR THE USER !!!
+// 1. To use your custom SVG logo:
+//    - Go to the 'return <svg ...>' block below.
+//    - Replace the placeholder content (the example <g> with <rect> and <text>)
+//      WITHIN the <svg>...</svg> tags with your actual SVG code (e.g., <path d="..."/>).
+//    - Ensure your SVG has an appropriate `viewBox` attribute for proper scaling.
+//    - After adding your SVG code, set the `useCustomSvg` flag below to `true`.
+//
+// 2. If `useCustomSvg` is `false` (default), a fallback logo (Home icon + Site Name) will be displayed.
+//
+// Dimension Guidance (applied via className prop when using <SiteLogo />):
+// - For Header: Use className="h-7" (or "h-7 w-auto" if aspect ratio is fixed by SVG's viewBox)
+// - For Footer: Use className="h-6" (or "h-6 w-auto")
+
+const useCustomSvg = false; // USER: Set this to true after adding your SVG code below and testing it
+
 export function SiteLogo({ className, ...props }: SiteLogoProps) {
-  return (
-    // IMPORTANT: Replace the content *within* this <svg> element with your actual SVG code.
-    // The viewBox, width, height, and other attributes may also need adjustment for your specific SVG.
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 120 30" // Adjust this viewBox to match your actual SVG's aspect ratio and content
-      className={className} // Pass className for sizing (e.g., "h-7 w-auto")
-      aria-labelledby="siteLogoTitle"
-      role="img"
-      {...props}
-    >
-      <title id="siteLogoTitle">Post My Property Logo</title>
-      {/* Placeholder SVG Content - START */}
-      {/* Replace this rect and text with your actual SVG paths, shapes, etc. */}
-      <rect width="120" height="30" rx="5" ry="5" fill="hsl(var(--primary))" />
-      <text
-        x="50%"
-        y="50%"
-        dominantBaseline="middle"
-        textAnchor="middle"
-        fontFamily="PT Sans, sans-serif" // Consider matching your site's font
-        fontSize="10" // Adjust font size as needed
-        fontWeight="bold"
-        fill="hsl(var(--primary-foreground))"
+  if (useCustomSvg) {
+    // User wants to use their custom SVG
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 120 30" // USER: IMPORTANT! Adjust this viewBox to match your actual SVG's aspect ratio and content. E.g., "0 0 200 50"
+        aria-labelledby="siteLogoTitle"
+        role="img"
+        className={cn("w-auto", className)} // Ensures width scales based on viewBox, height is from passed className
+        {...props} // Spreads other HTML attributes if any
       >
-        PMP LOGO
-      </text>
-      {/* Placeholder SVG Content - END */}
-    </svg>
-  );
+        <title id="siteLogoTitle">{siteConfig.name} Logo</title>
+        {/*
+          USER: Replace THIS ENTIRE <g> element (or just its content) with your actual SVG code.
+          The placeholder <rect> and <text> are just examples.
+          Your SVG code (e.g., <path>, <circle>, etc.) should go here.
+          Make sure your SVG content is scalable. For colors, you can:
+          a) Use `fill="currentColor"` or `stroke="currentColor"` in your SVG paths/shapes
+             if you want to control its color via Tailwind text color classes on the parent.
+          b) Define colors directly in your SVG (e.g., fill="#FF0000").
+        */}
+        <g>
+          {/* --- Placeholder SVG Content - START --- */}
+          {/* --- Replace or remove this <g> element and its content with your SVG --- */}
+          <rect width="120" height="30" rx="5" ry="5" fill="hsl(var(--primary))" />
+          <text
+            x="50%"
+            y="50%"
+            dominantBaseline="middle"
+            textAnchor="middle"
+            fontFamily="inherit" // Inherits font from parent, or set your own
+            fontSize="10"      // Adjust font size as needed, or use SVG units for responsiveness
+            fontWeight="bold"
+            fill="hsl(var(--primary-foreground))"
+          >
+            PMP LOGO
+          </text>
+          {/* --- Placeholder SVG Content - END --- */}
+        </g>
+      </svg>
+    );
+  } else {
+    // Fallback: Home icon and site name
+    // The className prop (e.g., "h-7") will be applied to this div.
+    return (
+      <div className={cn("flex items-center gap-2", className)} {...props}>
+        {/* The Home icon will attempt to fill the height of its container.
+            Adjust icon size directly if needed, e.g., className="h-5 w-5" or "h-[20px] w-[20px]" */}
+        <Home className="text-primary flex-shrink-0 h-full w-auto" />
+        <span className="font-semibold text-lg text-foreground whitespace-nowrap">
+          {siteConfig.name}
+        </span>
+      </div>
+    );
+  }
 }

@@ -17,19 +17,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SiteLogo } from "@/components/shared/SiteLogo"; // Import the SiteLogo component
+import { SiteLogo } from "@/components/shared/SiteLogo";
 
 export function AppHeader() {
   const pathname = usePathname();
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [sheetOpen, setSheetOpen] = React.useState(false); // State for mobile menu sheet
+  const [sheetOpen, setSheetOpen] = React.useState(false);
 
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 max-w-screen-2xl items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <SiteLogo className="h-7 w-auto" /> {/* Use SiteLogo here */}
+            <SiteLogo className="h-7" /> {/* Adjusted: w-auto is handled by SiteLogo or SVG viewBox */}
           </Link>
           <nav className="hidden md:flex gap-6 items-center">
             {siteConfig.navItems.map((item) => (
@@ -73,7 +73,7 @@ export function AppHeader() {
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
               <Link href="/" className="mr-6 flex items-center space-x-2 mb-6" onClick={() => setSheetOpen(false)}>
-                <SiteLogo className="h-7 w-auto" /> {/* Use SiteLogo in mobile menu */}
+                <SiteLogo className="h-7" /> {/* Adjusted: w-auto is handled by SiteLogo or SVG viewBox */}
               </Link>
               <div className="flex flex-col space-y-3">
                 {siteConfig.navItems.map((item) => (
@@ -92,11 +92,11 @@ export function AppHeader() {
                   </Link>
                 ))}
                 <Button
-                  variant="default" // Changed to default to match desktop
+                  variant="default"
                   className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground"
                   onClick={() => {
-                    setSheetOpen(false); // Close sheet first
-                    setTimeout(() => setDialogOpen(true), 150); // Then open dialog
+                    setSheetOpen(false); 
+                    setTimeout(() => setDialogOpen(true), 150); 
                   }}
                 >
                   <Rocket className="mr-2 h-4 w-4" />

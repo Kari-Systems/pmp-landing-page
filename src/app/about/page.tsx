@@ -3,7 +3,7 @@ import { PageContainer, Section, SectionTitle } from "@/components/layout/page-c
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin as LocationPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
+import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import { AnimatedScrollArrow } from "@/components/shared/animated-scroll-arrow";
 
@@ -33,7 +33,7 @@ const companyInfo = [
 export default function AboutPage() {
   return (
     <PageContainer>
-      <Section id="about-summary" className="pt-8 md:pt-12">
+      <Section id="about-summary"> {/* Removed custom top padding to use Section default */}
         <SectionTitle>Post My Property: Minimal, Fast, Affordable.</SectionTitle>
          <p className="text-center text-xl text-muted-foreground -mt-8 mb-8 max-w-3xl mx-auto">
           Designed for Hyderabad by a local engineer, our app cuts out middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message. We're building a scalable business with strong profit potential.
@@ -103,7 +103,7 @@ export default function AboutPage() {
                       <a href="mailto:vamsikrishna481998@gmail.com" className="hover:text-primary text-sm">vamsikrishna481998@gmail.com (Developer)</a>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <LocationPin className="h-4 w-4 flex-shrink-0" />
+                      <MapPin className="h-4 w-4 flex-shrink-0" />
                       <span className="text-sm">Hyderabad, India</span>
                     </div>
                   </div>
