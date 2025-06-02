@@ -3,7 +3,7 @@ import { PageContainer, Section, SectionTitle } from "@/components/layout/page-c
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin as LocationPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react"; // Renamed MapPin to LocationPin to avoid conflict if MapPin is used differently locally
+import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin as LocationPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import { AnimatedScrollArrow } from "@/components/shared/animated-scroll-arrow";
 
@@ -33,7 +33,7 @@ const companyInfo = [
 export default function AboutPage() {
   return (
     <PageContainer>
-      <Section id="about-summary" className="pt-8 pb-0 md:pt-12 md:pb-0">
+      <Section id="about-summary" className="pt-8 md:pt-12">
         <SectionTitle>Post My Property: Minimal, Fast, Affordable.</SectionTitle>
          <p className="text-center text-xl text-muted-foreground -mt-8 mb-8 max-w-3xl mx-auto">
           Designed for Hyderabad by a local engineer, our app cuts out middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message. We're building a scalable business with strong profit potential.
@@ -41,7 +41,7 @@ export default function AboutPage() {
         <AnimatedScrollArrow className="text-center mb-12" />
       </Section>
 
-      <Section id="company-overview" className="py-0 md:py-0">
+      <Section id="company-overview">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {companyInfo.map(info => (
             <Card key={info.title} className="text-center shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 h-full flex flex-col">
@@ -59,7 +59,7 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <Section id="founder-and-investment" className="pt-0 md:pt-0">
+      <Section id="founder-and-investment">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
             <FounderBio />

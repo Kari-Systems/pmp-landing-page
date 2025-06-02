@@ -3,10 +3,7 @@
 
 import React from "react";
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
-import type { Metadata } from "next";
-
-// Note: Metadata export is not allowed in client components. 
-// Consider moving this to a server component parent or layout if page-specific metadata is crucial.
+// Metadata export is not allowed in client components.
 // export const metadata: Metadata = {
 //   title: "Privacy Policy",
 //   description: "Privacy Policy for Post My Property.",
@@ -27,7 +24,7 @@ export default function PrivacyPolicyPage() {
           {lastUpdated && <p>Last updated: {lastUpdated}</p>}
           
           <h2>1. Introduction</h2>
-          <p>Welcome to Post My Property (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us at privacy@postmyproperty.example.com.</p>
+          <p>Welcome to Post My Property (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us at communication@postmyproperty.in.</p>
 
           <h2>2. Information We Collect</h2>
           <p>We collect personal information that you voluntarily provide to us when you register on the website, express an interest in obtaining information about us or our products and services, when you participate in activities on the website or otherwise when you contact us.</p>
@@ -55,8 +52,8 @@ export default function PrivacyPolicyPage() {
           <p>We may update this privacy notice from time to time. The updated version will be indicated by an updated &quot;Revised&quot; date and the updated version will be effective as soon as it is accessible. We encourage you to review this privacy notice frequently to be informed of how we are protecting your information.</p>
 
           <h2>10. How Can You Contact Us About This Notice?</h2>
-          <p>If you have questions or comments about this notice, you may email us at privacy@postmyproperty.example.com or by post to:</p>
-          <p>Post My Property<br/>[Your Company Address Here]<br/>[City, State, Zip Code]<br/>India</p>
+          <p>If you have questions or comments about this notice, you may email us at communication@postmyproperty.in or by post to:</p>
+          <p>Post My Property<br/>Hyderabad<br/>Telangana, 500085<br/>India</p>
         </div>
       </Section>
     </PageContainer>

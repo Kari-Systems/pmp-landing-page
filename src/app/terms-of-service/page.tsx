@@ -3,10 +3,7 @@
 
 import React from "react";
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
-import type { Metadata } from "next";
-
-// Note: Metadata export is not allowed in client components.
-// Consider moving this to a server component parent or layout if page-specific metadata is crucial.
+// Metadata export is not allowed in client components.
 // export const metadata: Metadata = {
 //   title: "Terms of Service",
 //   description: "Terms of Service for Post My Property.",
@@ -54,7 +51,7 @@ export default function TermsOfServicePage() {
           <p>NEITHER POST MY PROPERTY NOR ANY OTHER PARTY INVOLVED IN CREATING, PRODUCING, OR DELIVERING THE SERVICES OR CONTENT WILL BE LIABLE FOR ANY INCIDENTAL, SPECIAL, EXEMPLARY OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, LOSS OF DATA OR GOODWILL, SERVICE INTERRUPTION, COMPUTER DAMAGE OR SYSTEM FAILURE OR THE COST OF SUBSTITUTE SERVICES ARISING OUT OF OR IN CONNECTION WITH THESE TERMS OR FROM THE USE OF OR INABILITY TO USE THE SERVICES OR CONTENT.</p>
 
           <h2>10. Contact Information</h2>
-          <p>If you have any questions about these Terms, please contact us at legal@postmyproperty.example.com.</p>
+          <p>If you have any questions about these Terms, please contact us at communication@postmyproperty.in.</p>
         </div>
       </Section>
     </PageContainer>
