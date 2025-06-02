@@ -3,8 +3,9 @@ import { PageContainer, Section, SectionTitle } from "@/components/layout/page-c
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, Eye, Lightbulb, Phone, Mail, Settings, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
+import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
+import { AnimatedScrollArrow } from "@/components/shared/animated-scroll-arrow";
 
 export const metadata: Metadata = {
   title: "About Post My Property - Our Story, Vision & Investment Opportunity",
@@ -25,26 +26,19 @@ const companyInfo = [
   {
     icon: Lightbulb,
     title: "Our Uniqueness",
-    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, hyperlocal focus, transparent pricing (from ₹200/month), and direct seller-to-buyer connections. Our lean model and scalable tech are poised for rapid growth and profitability."
+    description: "Bootstrapped and founder-led, Post My Property offers a 3-step listing process, transparent pricing (from ₹200/month), and direct seller-to-buyer connections. Initially focused hyperlocally on Hyderabad, our lean model and scalable technology are engineered for rapid growth. We are actively working to expand our services to other key cities and states in phases, driven by user adoption and community feedback, demonstrating our commitment to broader market penetration."
   }
 ];
-
-const landingPageTechStack = [
-  "Frontend: Next.js, React, TypeScript",
-  "Styling: Tailwind CSS, ShadCN UI",
-  "AI (Planned): Genkit for intelligent features",
-  "Hosting: Firebase App Hosting / Vercel",
-];
-
 
 export default function AboutPage() {
   return (
     <PageContainer>
       <Section id="about-summary" className="pt-8 pb-0 md:pt-12 md:pb-0">
         <SectionTitle>Post My Property: Minimal, Fast, Affordable.</SectionTitle>
-         <p className="text-center text-xl text-muted-foreground -mt-8 mb-16 max-w-3xl mx-auto">
+         <p className="text-center text-xl text-muted-foreground -mt-8 mb-8 max-w-3xl mx-auto">
           Designed for Hyderabad by a local engineer, our app cuts out middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message. We're building a scalable business with strong profit potential.
         </p>
+        <AnimatedScrollArrow className="text-center mb-12" />
       </Section>
 
       <Section id="company-overview" className="py-0 md:py-0">
@@ -165,8 +159,7 @@ export default function AboutPage() {
                     <h4 className="font-semibold text-md">Intuitive Mobile-First Platform</h4>
                   </div>
                   <p className="text-muted-foreground text-sm ml-[36px]">
-                    Our app provides a remarkably simple and fast experience. We've prioritized ease-of-use, ensuring anyone can list a property in minutes.
-                    <span className="block text-xs text-primary/80 mt-1">Leveraging modern cross-platform technology for wide reach and agile development.</span>
+                    Our core application is a user-friendly mobile platform, making property listing effortless. Non-technical users will find it remarkably simple, while the underlying modern, cross-platform technology (Flutter) ensures wide reach, rapid development, and a native-like experience.
                   </p>
                 </div>
                 <div>
@@ -175,8 +168,7 @@ export default function AboutPage() {
                     <h4 className="font-semibold text-md">Scalable & Secure Backend</h4>
                   </div>
                   <p className="text-muted-foreground text-sm ml-[36px]">
-                    The engine of Post My Property is built to grow. It's designed for high performance and robust security, protecting user data and ensuring reliable service.
-                    <span className="block text-xs text-primary/80 mt-1">Utilizing proven, enterprise-grade backend solutions for stability and efficiency.</span>
+                    The engine of Post My Property is built for growth using robust and proven technologies (Django/Python, PostgreSQL). It's designed for high performance and strong security, protecting user data and ensuring reliable service as we expand.
                   </p>
                 </div>
                 <div>
@@ -185,29 +177,11 @@ export default function AboutPage() {
                     <h4 className="font-semibold text-md">Reliable Cloud Infrastructure</h4>
                   </div>
                   <p className="text-muted-foreground text-sm ml-[36px]">
-                    We operate on a dependable cloud foundation, guaranteeing high availability and consistent performance, so the platform is always accessible.
-                    <span className="block text-xs text-primary/80 mt-1">Industry-standard cloud architecture ensures uptime and data integrity.</span>
+                    We operate on dependable cloud infrastructure (DigitalOcean, Firebase), guaranteeing high availability and consistent performance, ensuring the platform is always accessible and can scale with user demand.
                   </p>
                 </div>
               </CardContent>
             </Card>
-
-            <Card className="shadow-lg">
-               <CardHeader>
-                 <div className="flex items-center gap-2">
-                    <Settings className="h-6 w-6 text-primary" />
-                    <CardTitle className="font-headline">Landing Page Tech</CardTitle>
-                 </div>
-                 <CardDescription>This website is built for performance and scalability.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
-                  {landingPageTechStack.map(item => <li key={item}>{item}</li>)}
-                </ul>
-                <p className="mt-2 text-xs text-muted-foreground">Our technology choices prioritize modern development practices, user experience, and rapid iteration.</p>
-              </CardContent>
-            </Card>
-
           </div>
         </div>
       </Section>

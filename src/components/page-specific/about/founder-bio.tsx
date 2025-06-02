@@ -30,6 +30,7 @@ export function FounderBio() {
               alt={founder.name}
               layout="fill"
               objectFit="cover"
+              priority
             />
           </div>
           <CardTitle className="text-3xl font-bold font-headline">{founder.name}</CardTitle>
