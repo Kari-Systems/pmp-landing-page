@@ -26,6 +26,12 @@ import { PageContainer, Section, SectionTitle } from "@/components/layout/page-c
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
+const propertyUsedTypeOptions = ["New", "Resale"] as const;
+const ownershipOptions = ["Freehold", "Leasehold"] as const;
+const availabilityStatusOptions = ["Ready to Move", "Under Construction"] as const;
+const villaTypeOptions = ["Duplex", "Triplex", "Others"] as const;
+const approvalsOptions = ["GHMC", "HMDA", "DTCP", "LRS"];
+
 const propertySchema = z.object({
   description: z.string().min(20, { message: "Description must be at least 20 characters." }),
   images: z.any()
@@ -40,7 +46,7 @@ const propertySchema = z.object({
       return Array.from(files).every((file: any) => ACCEPTED_IMAGE_TYPES.includes(file.type));
     }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
   property_type: z.enum(["flat", "house", "villa", "plot"]),
-  property_used_type: z.string().optional().nullable(),
+  property_used_type: z.enum(propertyUsedTypeOptions).optional().nullable(),
   property_age: z.string().min(1, {message: "Required"}).optional().nullable(),
   address: z.string().min(10, { message: "Address must be at least 10 characters." }),
   city: z.string().min(1, { message: "City is required." }),
@@ -63,7 +69,7 @@ const propertySchema = z.object({
   corner_plot: z.boolean().optional().nullable(),
   approvals: z.string().optional().nullable(),
   private_garden_terrace_area: z.string().optional().nullable(),
-  villa_type: z.string().optional().nullable(),
+  villa_type: z.enum(villaTypeOptions).optional().nullable(),
   plot_area: z.string().optional().nullable(),
   floor_number: z.string().optional().nullable(),
   total_floors: z.string().optional().nullable(),
@@ -75,8 +81,8 @@ const propertySchema = z.object({
   furnishing: z.enum(["Unfurnished", "Semi-Furnished", "Furnished"]).optional().nullable(),
   amenities: z.string().optional().nullable(),
   facilities: z.string().optional().nullable(),
-  availability_status: z.string().optional().nullable(),
-  ownership: z.string().optional().nullable(),
+  availability_status: z.enum(availabilityStatusOptions).optional().nullable(),
+  ownership: z.enum(ownershipOptions).optional().nullable(),
   parking: z.string().optional().nullable(),
 }).superRefine((data, ctx) => {
     if (data.property_type === 'house' && !data.uds) {
@@ -365,21 +371,37 @@ export default function AddPropertyPage() {
             <Card>
               <CardHeader><CardTitle>1. Basic Information</CardTitle></CardHeader>
               <CardContent className="space-y-6">
-                <FormField control={form.control} name="property_type" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Property Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
-                      <FormControl><SelectTrigger><SelectValue placeholder="Select property type" /></SelectTrigger></FormControl>
-                      <SelectContent>
-                        <SelectItem value="flat">Flat</SelectItem>
-                        <SelectItem value="house">House / Independent House</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="plot">Plot</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField control={form.control} name="property_type" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Property Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Select property type" /></SelectTrigger></FormControl>
+                        <SelectContent>
+                          <SelectItem value="flat">Flat</SelectItem>
+                          <SelectItem value="house">House / Independent House</SelectItem>
+                          <SelectItem value="villa">Villa</SelectItem>
+                          <SelectItem value="plot">Plot</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  { propertyType !== 'plot' && (
+                    <FormField control={form.control} name="property_used_type" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Property Usage</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value ?? undefined} disabled={isLoading}>
+                                <FormControl><SelectTrigger><SelectValue placeholder="Select usage type" /></SelectTrigger></FormControl>
+                                <SelectContent>
+                                    {propertyUsedTypeOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                  )}
+                </div>
                 <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
@@ -473,6 +495,9 @@ export default function AddPropertyPage() {
                         </FormItem>
                     )} />
                 </div>
+                <FormDescription className="md:col-span-2 text-center text-base">
+                  Pro Tip! Providing accurate Latitude and Longitude helps boost your listing visibility and increases lead quality.
+                </FormDescription>
               </CardContent>
             </Card>
 
@@ -559,9 +584,7 @@ export default function AddPropertyPage() {
                             <Select onValueChange={field.onChange} defaultValue={field.value ?? ""} disabled={isLoading}>
                                 <FormControl><SelectTrigger><SelectValue placeholder="Select Villa Type" /></SelectTrigger></FormControl>
                                 <SelectContent>
-                                    <SelectItem value="Simplex">Simplex</SelectItem>
-                                    <SelectItem value="Duplex">Duplex</SelectItem>
-                                    <SelectItem value="Triplex">Triplex</SelectItem>
+                                    {villaTypeOptions.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                             <FormMessage />
@@ -671,7 +694,7 @@ export default function AddPropertyPage() {
                                     </FormControl>
                                      <FormField control={form.control} name="plot_area_units" render={({ field: unitField }) => (
                                         <Select 
-                                            value={unitField.value} 
+                                            value={unitField.value ?? undefined} 
                                             onValueChange={(newUnit) => {
                                                 const oldUnit = getValues('plot_area_units');
                                                 const areaValue = parseFloat(getValues('area') || '0');
@@ -778,7 +801,12 @@ export default function AddPropertyPage() {
                      <FormField control={form.control} name="ownership" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Ownership</FormLabel>
-                            <FormControl><Input placeholder="e.g., Freehold" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <Select onValueChange={field.onChange} defaultValue={field.value ?? undefined} disabled={isLoading}>
+                                <FormControl><SelectTrigger><SelectValue placeholder="Select ownership type" /></SelectTrigger></FormControl>
+                                <SelectContent>
+                                    {ownershipOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
                             <FormMessage />
                         </FormItem>
                     )} />
@@ -794,7 +822,12 @@ export default function AddPropertyPage() {
                     <FormField control={form.control} name="availability_status" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Availability Status</FormLabel>
-                            <FormControl><Input placeholder="e.g., Ready to move" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <Select onValueChange={field.onChange} defaultValue={field.value ?? undefined} disabled={isLoading}>
+                                <FormControl><SelectTrigger><SelectValue placeholder="Select availability status" /></SelectTrigger></FormControl>
+                                <SelectContent>
+                                    {availabilityStatusOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
                             <FormMessage />
                         </FormItem>
                     )} />
@@ -802,7 +835,8 @@ export default function AddPropertyPage() {
                       <FormField control={form.control} name="approvals" render={({ field }) => (
                           <FormItem>
                               <FormLabel>Building Approvals</FormLabel>
-                              <FormControl><Input placeholder="e.g., GHMC" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormControl><Input placeholder="e.g., GHMC, LRS" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormDescription>Comma separated if multiple</FormDescription>
                               <FormMessage />
                           </FormItem>
                       )} />
