@@ -279,14 +279,14 @@ export default function AddPropertyPage() {
                 <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
-                    <FormControl><Textarea placeholder="Describe your property..." {...field} rows={5} disabled={isLoading} /></FormControl>
+                    <FormControl><Textarea placeholder="Describe your property..." {...field} value={field.value ?? ""} rows={5} disabled={isLoading} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                  <FormField control={form.control} name="price" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Price (in Rs.)</FormLabel>
-                    <FormControl><Input placeholder="e.g., 50,00,000" {...field} disabled={isLoading} /></FormControl>
+                    <FormControl><Input placeholder="e.g., 50,00,000" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                     {priceInWords && <p className="text-sm text-muted-foreground capitalize pt-2">{priceInWords}</p>}
                     <FormMessage />
                   </FormItem>
@@ -329,7 +329,7 @@ export default function AddPropertyPage() {
                 <FormField control={form.control} name="address" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Full Address</FormLabel>
-                    <FormControl><Input placeholder="e.g., 123 Main St, Hitech City" {...field} disabled={isLoading} /></FormControl>
+                    <FormControl><Input placeholder="e.g., 123 Main St, Hitech City" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -346,7 +346,7 @@ export default function AddPropertyPage() {
                 <FormField control={form.control} name="locality" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Locality / Area</FormLabel>
-                    <FormControl><Input placeholder="e.g., Madhapur (or type a new one)" {...field} disabled={isLoading} /></FormControl>
+                    <FormControl><Input placeholder="e.g., Madhapur (or type a new one)" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                     <FormDescription>Start typing to see suggestions or add a new locality.</FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -468,7 +468,7 @@ export default function AddPropertyPage() {
                            <FormField control={form.control} name="area" render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Total Area</FormLabel>
-                                  <FormControl><Input placeholder="e.g., 1800" {...field} disabled={isLoading} /></FormControl>
+                                  <FormControl><Input placeholder="e.g., 1800" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                                   <FormMessage />
                               </FormItem>
                            )} />
@@ -529,7 +529,7 @@ export default function AddPropertyPage() {
                       <FormField control={form.control} name="area" render={({ field }) => (
                           <FormItem>
                               <FormLabel>Total Area (sq ft)</FormLabel>
-                              <FormControl><Input placeholder="e.g., 1200" {...field} disabled={isLoading} /></FormControl>
+                              <FormControl><Input placeholder="e.g., 1200" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                               <FormMessage />
                           </FormItem>
                        )} />
@@ -616,3 +616,5 @@ export default function AddPropertyPage() {
     </PageContainer>
   );
 }
+
+    
