@@ -285,6 +285,25 @@ export default function AddPropertyPage() {
       const isPlot = values.property_type === 'plot';
       const isHouse = values.property_type === 'house';
       const isVilla = values.property_type === 'villa';
+      
+      const parseNumericValue = (val: string | null | undefined): number | null => {
+          if (val === null || val === undefined || val.trim() === "") return null;
+          const num = parseInt(val, 10);
+          return isNaN(num) ? null : num;
+      };
+      
+      const parseFloorNumber = (val: string | null | undefined): number | null => {
+          if (val === null || val === undefined || val.trim() === "") return null;
+          if (val.toUpperCase() === 'G') return 0;
+          const num = parseInt(val, 10);
+          return isNaN(num) ? null : num;
+      };
+
+      const bedroomsNum = parseNumericValue(values.bedrooms);
+      const bathroomsNum = parseNumericValue(values.bathrooms);
+      const floorNum = parseFloorNumber(values.floor_number);
+      const totalFloorsNum = parseNumericValue(values.total_floors);
+
 
       const propertyData = {
         id,
@@ -320,12 +339,12 @@ export default function AddPropertyPage() {
         
         // Non-Plot Specifics
         carpet_area: !isPlot ? (values.carpet_area ?? null) : null,
-        bedrooms: !isPlot ? (values.bedrooms ?? null) : null,
-        bathrooms: !isPlot ? (values.bathrooms ?? null) : null,
+        bedrooms: !isPlot ? bedroomsNum : null,
+        bathrooms: !isPlot ? bathroomsNum : null,
         balconies: !isPlot ? (values.balconies ?? null) : null,
         furnishing: !isPlot ? (values.furnishing ?? null) : null,
-        floor_number: !isPlot ? (values.floor_number ?? null) : null,
-        total_floors: !isPlot ? (values.total_floors ?? null) : null,
+        floor_number: !isPlot ? floorNum : null,
+        total_floors: !isPlot ? totalFloorsNum : null,
         parking: !isPlot ? (values.parking ?? null) : null,
         amenities: !isPlot ? (values.amenities ?? null) : null,
         facilities: !isPlot ? (values.facilities ?? null) : null,
@@ -340,8 +359,8 @@ export default function AddPropertyPage() {
         breadth: isPlot ? (values.breadth ?? null) : null,
         plot_area: isPlot ? (values.area ?? null) : null,
         plot_area_units: isPlot ? (values.plot_area_units ?? null) : null,
-        boundary_wall: isPlot ? values.boundary_wall ?? null : null,
-        corner_plot: isPlot ? values.corner_plot ?? null : null,
+        boundary_wall: isPlot ? values.boundary_wall ?? false : null,
+        corner_plot: isPlot ? values.corner_plot ?? false : null,
 
         // Legacy fields for schema consistency, can be cleaned up later
         neighborhood_boundaries: values.neighborhood_boundaries ?? null,
@@ -571,7 +590,7 @@ export default function AddPropertyPage() {
                     <FormField control={form.control} name="floor_number" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Floor Number</FormLabel>
-                            <FormControl><Input placeholder="e.g., 5 or G" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <FormControl><Input placeholder="e.g., 5 or G for Ground" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
