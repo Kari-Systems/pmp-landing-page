@@ -97,12 +97,29 @@ const propertySchema = z.object({
 
 type PropertyFormValues = z.infer<typeof propertySchema>;
 
+const CONVERSIONS = {
+  FEET_TO_METERS: 0.3048,
+  METERS_TO_FEET: 3.28084,
+  // Base unit is Sq. Feet
+  UNITS_TO_SQFEET: {
+    "Sq. Yards": 9,
+    "Sq. Meters": 10.7639,
+    "Acres": 43560,
+    "Guntas": 1089,
+    "Sq. Feet": 1,
+  },
+};
+
 export default function AddPropertyPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
   const [imagePreviews, setImagePreviews] = React.useState<{url: string, file: File}[]>([]);
   const [priceInWords, setPriceInWords] = React.useState("");
+
+  const [lengthUnit, setLengthUnit] = React.useState("feet");
+  const [breadthUnit, setBreadthUnit] = React.useState("feet");
+  const [lastChangedSource, setLastChangedSource] = React.useState<"dims" | "area" | null>(null);
 
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertySchema),
@@ -116,6 +133,57 @@ export default function AddPropertyPage() {
 
   const propertyType = form.watch("property_type");
   const priceValue = form.watch("price");
+
+  const { watch, setValue, getValues } = form;
+  const watchedPlotFields = watch(['length', 'breadth', 'area', 'plot_area_units']);
+
+  React.useEffect(() => {
+      if (!lastChangedSource) return;
+
+      const lengthVal = parseFloat(getValues('length') || '0');
+      const breadthVal = parseFloat(getValues('breadth') || '0');
+      const areaVal = parseFloat(getValues('area') || '0');
+      const areaUnit = getValues('plot_area_units') || 'Sq. Yards';
+
+      const lengthInFeet = lengthUnit === 'meters' ? lengthVal * CONVERSIONS.METERS_TO_FEET : lengthVal;
+      const breadthInFeet = breadthUnit === 'meters' ? breadthVal * CONVERSIONS.METERS_TO_FEET : breadthVal;
+
+      if (lastChangedSource === 'dims') {
+          const areaInSqFeet = lengthInFeet * breadthInFeet;
+          if (areaInSqFeet > 0) {
+              const conversionFactor = CONVERSIONS.UNITS_TO_SQFEET[areaUnit as keyof typeof CONVERSIONS.UNITS_TO_SQFEET] || 1;
+              const newArea = areaInSqFeet / conversionFactor;
+              if (Math.abs(newArea - areaVal) > 0.01) {
+                setValue('area', newArea.toFixed(2));
+              }
+          }
+      } else if (lastChangedSource === 'area') {
+          const conversionFactor = CONVERSIONS.UNITS_TO_SQFEET[areaUnit as keyof typeof CONVERSIONS.UNITS_TO_SQFEET] || 1;
+          const areaInSqFeet = areaVal * conversionFactor;
+
+          if (areaInSqFeet > 0) {
+              if (lengthInFeet > 0) {
+                  const newBreadthInFeet = areaInSqFeet / lengthInFeet;
+                  const newBreadth = breadthUnit === 'meters' ? newBreadthInFeet * CONVERSIONS.FEET_TO_METERS : newBreadthInFeet;
+                   if (Math.abs(newBreadth - breadthVal) > 0.01) {
+                     setValue('breadth', newBreadth.toFixed(2));
+                   }
+              } else {
+                  const sideInFeet = Math.sqrt(areaInSqFeet);
+                  const newLength = lengthUnit === 'meters' ? sideInFeet * CONVERSIONS.FEET_TO_METERS : sideInFeet;
+                  const newBreadth = breadthUnit === 'meters' ? sideInFeet * CONVERSIONS.FEET_TO_METERS : sideInFeet;
+                  if (Math.abs(newLength - lengthVal) > 0.01) {
+                    setValue('length', newLength.toFixed(2));
+                  }
+                  if (Math.abs(newBreadth - breadthVal) > 0.01) {
+                    setValue('breadth', newBreadth.toFixed(2));
+                  }
+              }
+          }
+      }
+      setLastChangedSource(null); // Reset after calculation
+  }, [watchedPlotFields, lengthUnit, breadthUnit, lastChangedSource, getValues, setValue]);
+
 
   const numberToWordsIndian = (price: string) => {
       const num = Number(String(price).replace(/,/g, ''));
@@ -510,87 +578,130 @@ export default function AddPropertyPage() {
                 <Card>
                     <CardHeader><CardTitle>3. Plot Specifications</CardTitle></CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                       <div className="grid grid-cols-2 gap-2">
-                          <FormField control={form.control} name="length" render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Length</FormLabel>
-                                  <FormControl><Input 
-                                      placeholder="e.g., 60" 
-                                      {...field} 
-                                      value={field.value ?? ""} 
-                                      disabled={isLoading}
-                                      onChange={(e) => {
-                                          field.onChange(e);
-                                          const l = parseFloat(e.target.value) || 0;
-                                          const b = parseFloat(form.getValues('breadth') || '0');
-                                          if (l > 0 && b > 0) {
-                                              form.setValue('area', (l * b).toFixed(2));
-                                          }
-                                      }}
-                                  /></FormControl>
-                                  <FormMessage />
-                              </FormItem>
-                          )} />
-                          <FormField control={form.control} name="breadth" render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Breadth</FormLabel>
-                                  <FormControl><Input 
-                                      placeholder="e.g., 30" 
-                                      {...field} 
-                                      value={field.value ?? ""} 
-                                      disabled={isLoading} 
-                                      onChange={(e) => {
-                                          field.onChange(e);
-                                          const b = parseFloat(e.target.value) || 0;
-                                          const l = parseFloat(form.getValues('length') || '0');
-                                          if (l > 0 && b > 0) {
-                                              form.setValue('area', (l * b).toFixed(2));
-                                          }
-                                      }}
-                                  /></FormControl>
-                                  <FormMessage />
-                              </FormItem>
-                          )} />
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
+                        <FormField control={form.control} name="length" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Length</FormLabel>
+                                <div className="flex items-center gap-2">
+                                    <FormControl>
+                                        <Input 
+                                            placeholder="e.g., 60" 
+                                            {...field} 
+                                            value={field.value ?? ""} 
+                                            disabled={isLoading}
+                                            onChange={(e) => {
+                                                field.onChange(e);
+                                                setLastChangedSource("dims");
+                                            }}
+                                        />
+                                    </FormControl>
+                                    <Select value={lengthUnit} onValueChange={(newUnit) => {
+                                        const value = parseFloat(getValues('length') || '0');
+                                        if (value > 0) {
+                                            if (lengthUnit === 'feet' && newUnit === 'meters') {
+                                                setValue('length', (value * CONVERSIONS.FEET_TO_METERS).toFixed(2));
+                                            } else if (lengthUnit === 'meters' && newUnit === 'feet') {
+                                                setValue('length', (value * CONVERSIONS.METERS_TO_FEET).toFixed(2));
+                                            }
+                                        }
+                                        setLengthUnit(newUnit);
+                                        setLastChangedSource("dims");
+                                    }}>
+                                        <SelectTrigger className="w-[100px]"><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="feet">Feet</SelectItem>
+                                            <SelectItem value="meters">Meters</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+
+                        <FormField control={form.control} name="breadth" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Breadth</FormLabel>
+                                <div className="flex items-center gap-2">
+                                    <FormControl>
+                                        <Input 
+                                            placeholder="e.g., 30" 
+                                            {...field} 
+                                            value={field.value ?? ""} 
+                                            disabled={isLoading} 
+                                            onChange={(e) => {
+                                                field.onChange(e);
+                                                setLastChangedSource("dims");
+                                            }}
+                                        />
+                                    </FormControl>
+                                     <Select value={breadthUnit} onValueChange={(newUnit) => {
+                                        const value = parseFloat(getValues('breadth') || '0');
+                                        if (value > 0) {
+                                            if (breadthUnit === 'feet' && newUnit === 'meters') {
+                                                setValue('breadth', (value * CONVERSIONS.FEET_TO_METERS).toFixed(2));
+                                            } else if (breadthUnit === 'meters' && newUnit === 'feet') {
+                                                setValue('breadth', (value * CONVERSIONS.METERS_TO_FEET).toFixed(2));
+                                            }
+                                        }
+                                        setBreadthUnit(newUnit);
+                                        setLastChangedSource("dims");
+                                    }}>
+                                        <SelectTrigger className="w-[100px]"><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="feet">Feet</SelectItem>
+                                            <SelectItem value="meters">Meters</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+
+                       <div className="grid grid-cols-1 gap-2 md:col-span-2">
                            <FormField control={form.control} name="area" render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Total Area</FormLabel>
-                                  <FormControl><Input 
-                                      placeholder="e.g., 1800" 
-                                      {...field} 
-                                      value={field.value ?? ""} 
-                                      disabled={isLoading} 
-                                      onChange={(e) => {
-                                          field.onChange(e);
-                                          const a = parseFloat(e.target.value) || 0;
-                                          const l = parseFloat(form.getValues('length') || '0');
-                                          const b = parseFloat(form.getValues('breadth') || '0');
-                                          if (a > 0) {
-                                              if (l > 0) {
-                                                  form.setValue('breadth', (a / l).toFixed(2));
-                                              } else if (b > 0) {
-                                                  form.setValue('length', (a / b).toFixed(2));
-                                              }
-                                          }
-                                      }}
-                                  /></FormControl>
+                                   <div className="flex items-center gap-2">
+                                      <FormControl>
+                                        <Input 
+                                            placeholder="e.g., 1800" 
+                                            {...field} 
+                                            value={field.value ?? ""} 
+                                            disabled={isLoading} 
+                                            onChange={(e) => {
+                                                field.onChange(e);
+                                                setLastChangedSource("area");
+                                            }}
+                                        />
+                                    </FormControl>
+                                     <FormField control={form.control} name="plot_area_units" render={({ field: unitField }) => (
+                                        <Select 
+                                            value={unitField.value} 
+                                            onValueChange={(newUnit) => {
+                                                const oldUnit = getValues('plot_area_units');
+                                                const areaValue = parseFloat(getValues('area') || '0');
+                                                if (areaValue > 0 && oldUnit) {
+                                                    const oldFactor = CONVERSIONS.UNITS_TO_SQFEET[oldUnit as keyof typeof CONVERSIONS.UNITS_TO_SQFEET] || 1;
+                                                    const newFactor = CONVERSIONS.UNITS_TO_SQFEET[newUnit as keyof typeof CONVERSIONS.UNITS_TO_SQFEET] || 1;
+                                                    const areaInSqFt = areaValue * oldFactor;
+                                                    const newArea = areaInSqFt / newFactor;
+                                                    setValue('area', newArea.toFixed(2));
+                                                }
+                                                unitField.onChange(newUnit);
+                                                setLastChangedSource("area");
+                                            }}
+                                        >
+                                            <SelectTrigger className="w-[150px]"><SelectValue placeholder="Units" /></SelectTrigger>
+                                            <SelectContent>
+                                                {Object.keys(CONVERSIONS.UNITS_TO_SQFEET).map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                                            </SelectContent>
+                                        </Select>
+                                     )} />
+                                  </div>
                                   <FormMessage />
                               </FormItem>
                            )} />
-                           <FormField control={form.control} name="plot_area_units" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Units</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="Units" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                        {["Sq. Yards", "Sq. Meters", "Acres", "Guntas"].map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                           )} />
                         </div>
+
                         <FormField control={form.control} name="approvals" render={({ field }) => (
                           <FormItem>
                               <FormLabel>Approvals</FormLabel>
