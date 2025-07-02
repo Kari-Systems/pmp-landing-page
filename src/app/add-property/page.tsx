@@ -30,10 +30,12 @@ const propertyUsedTypeOptions = ["New", "Resale"] as const;
 const ownershipOptions = ["Freehold", "Leasehold"] as const;
 const availabilityStatusOptions = ["Ready to Move", "Under Construction"] as const;
 const villaTypeOptions = ["Duplex", "Triplex", "Others"] as const;
-const approvalsOptions = ["GHMC", "HMDA", "DTCP", "LRS"];
+const approvalsOptions = ["GHMC", "HMDA", "DTCP", "LRS", "Other"];
 
 const propertySchema = z.object({
-  description: z.string().min(20, { message: "Description must be at least 20 characters." }),
+  description: z.string()
+    .min(30, { message: "Description must be at least 30 characters." })
+    .max(500, { message: "Description must be less than 500 characters." }),
   images: z.any()
     .refine((files) => files === undefined || files?.length >= 0, "Images are required.")
     .refine((files) => files === undefined || files?.length <= 5, "You can upload a maximum of 5 images.")
@@ -48,7 +50,9 @@ const propertySchema = z.object({
   property_type: z.enum(["flat", "house", "villa", "plot"]),
   property_used_type: z.enum(propertyUsedTypeOptions).optional().nullable(),
   property_age: z.string().min(1, {message: "Required"}).optional().nullable(),
-  address: z.string().min(10, { message: "Address must be at least 10 characters." }),
+  address: z.string()
+    .min(30, { message: "Address must be at least 30 characters." })
+    .max(200, { message: "Address must be less than 200 characters." }),
   city: z.string().min(1, { message: "City is required." }),
   locality: z.string().min(3, { message: "Locality must be at least 3 characters." }),
   area: z.string().min(1, { message: "Area is required." }),
@@ -138,6 +142,8 @@ export default function AddPropertyPage() {
 
   const propertyType = form.watch("property_type");
   const priceValue = form.watch("price");
+  const descriptionValue = form.watch("description");
+  const addressValue = form.watch("address");
 
   const { watch, setValue, getValues } = form;
   const watchedPlotFields = watch(['length', 'breadth', 'area', 'plot_area_units']);
@@ -167,13 +173,19 @@ export default function AddPropertyPage() {
           const areaInSqFeet = areaVal * conversionFactor;
 
           if (areaInSqFeet > 0) {
-              if (lengthInFeet > 0) {
+              if (lengthInFeet > 0 && breadthInFeet > 0) { // If both have values, maybe recalculate one? Let's stick to breadth
+                   const newBreadthInFeet = areaInSqFeet / lengthInFeet;
+                   const newBreadth = dimensionUnit === 'meters' ? newBreadthInFeet * CONVERSIONS.FEET_TO_METERS : newBreadthInFeet;
+                   if (Math.abs(newBreadth - breadthVal) > 0.01) {
+                     setValue('breadth', newBreadth.toFixed(2));
+                   }
+              } else if (lengthInFeet > 0) { // Only length has value
                   const newBreadthInFeet = areaInSqFeet / lengthInFeet;
                   const newBreadth = dimensionUnit === 'meters' ? newBreadthInFeet * CONVERSIONS.FEET_TO_METERS : newBreadthInFeet;
                    if (Math.abs(newBreadth - breadthVal) > 0.01) {
                      setValue('breadth', newBreadth.toFixed(2));
                    }
-              } else {
+              } else { // No dimensions, calculate as a square
                   const sideInFeet = Math.sqrt(areaInSqFeet);
                   const newLength = dimensionUnit === 'meters' ? sideInFeet * CONVERSIONS.FEET_TO_METERS : sideInFeet;
                   const newBreadth = dimensionUnit === 'meters' ? sideInFeet * CONVERSIONS.FEET_TO_METERS : sideInFeet;
@@ -405,14 +417,15 @@ export default function AddPropertyPage() {
                 <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
-                    <FormControl><Textarea placeholder="Describe your property..." {...field} value={field.value ?? ""} rows={5} disabled={isLoading} /></FormControl>
+                    <FormControl><Textarea placeholder="Describe your property..." {...field} value={field.value ?? ""} rows={5} maxLength={500} disabled={isLoading} /></FormControl>
+                    <FormDescription className="text-right">{descriptionValue?.length || 0}/500</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )} />
                  <FormField control={form.control} name="price" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Price (in Rs.)</FormLabel>
-                    <FormControl><Input placeholder="e.g., 50,00,000" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                    <FormControl><Input type="number" placeholder="e.g., 5000000" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                     {priceInWords && <p className="text-sm font-medium text-muted-foreground capitalize pt-2">{priceInWords}</p>}
                     <FormMessage />
                   </FormItem>
@@ -457,7 +470,8 @@ export default function AddPropertyPage() {
                 <FormField control={form.control} name="address" render={({ field }) => (
                   <FormItem className="md:col-span-2">
                     <FormLabel>Full Address</FormLabel>
-                    <FormControl><Input placeholder="e.g., 123 Main St, Hitech City" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                    <FormControl><Input placeholder="e.g., 123 Main St, Hitech City" {...field} value={field.value ?? ""} maxLength={200} disabled={isLoading} /></FormControl>
+                    <FormDescription className="text-right">{addressValue?.length || 0}/200</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -564,15 +578,15 @@ export default function AddPropertyPage() {
                     <FormField control={form.control} name="total_floors" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Total Floors in Building</FormLabel>
-                            <FormControl><Input placeholder="e.g., 12" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <FormControl><Input type="number" placeholder="e.g., 12" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
                     {(propertyType === 'house' || propertyType === 'villa') &&
                       <FormField control={form.control} name="uds" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>UDS (Undivided Share)</FormLabel>
-                            <FormControl><Input placeholder="e.g., 50 sq yards" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <FormLabel>UDS (Undivided Share, in sq. ft.)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 50" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                             <FormMessage />
                         </FormItem>
                       )} />
@@ -606,6 +620,7 @@ export default function AddPropertyPage() {
                                     <FormLabel>Length</FormLabel>
                                     <FormControl>
                                         <Input 
+                                            type="number"
                                             placeholder="e.g., 60" 
                                             {...field} 
                                             value={field.value ?? ""} 
@@ -625,6 +640,7 @@ export default function AddPropertyPage() {
                                     <FormLabel>Breadth</FormLabel>
                                     <FormControl>
                                         <Input 
+                                            type="number"
                                             placeholder="e.g., 30" 
                                             {...field} 
                                             value={field.value ?? ""} 
@@ -682,6 +698,7 @@ export default function AddPropertyPage() {
                                    <div className="flex items-center gap-2">
                                       <FormControl>
                                         <Input 
+                                            type="number"
                                             placeholder="e.g., 1800" 
                                             {...field} 
                                             value={field.value ?? ""} 
@@ -698,7 +715,7 @@ export default function AddPropertyPage() {
                                             onValueChange={(newUnit) => {
                                                 const oldUnit = getValues('plot_area_units');
                                                 const areaValue = parseFloat(getValues('area') || '0');
-                                                if (areaValue > 0 && oldUnit) {
+                                                if (areaValue > 0 && oldUnit && newUnit) {
                                                     const oldFactor = CONVERSIONS.UNITS_TO_SQFEET[oldUnit as keyof typeof CONVERSIONS.UNITS_TO_SQFEET] || 1;
                                                     const newFactor = CONVERSIONS.UNITS_TO_SQFEET[newUnit as keyof typeof CONVERSIONS.UNITS_TO_SQFEET] || 1;
                                                     const areaInSqFt = areaValue * oldFactor;
@@ -721,10 +738,15 @@ export default function AddPropertyPage() {
                            )} />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField control={form.control} name="approvals" render={({ field }) => (
+                           <FormField control={form.control} name="approvals" render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Approvals</FormLabel>
-                                  <FormControl><Input placeholder="e.g., HMDA, DTCP" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value ?? undefined} disabled={isLoading}>
+                                      <FormControl><SelectTrigger><SelectValue placeholder="Select approval type" /></SelectTrigger></FormControl>
+                                      <SelectContent>
+                                          {approvalsOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                      </SelectContent>
+                                  </Select>
                                   <FormMessage />
                               </FormItem>
                             )} />
@@ -765,7 +787,7 @@ export default function AddPropertyPage() {
                       <FormField control={form.control} name="area" render={({ field }) => (
                           <FormItem>
                               <FormLabel>Total Built-up Area (sq ft)</FormLabel>
-                              <FormControl><Input placeholder="e.g., 1200" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormControl><Input type="number" placeholder="e.g., 1200" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                               <FormMessage />
                           </FormItem>
                        )} />
@@ -774,7 +796,7 @@ export default function AddPropertyPage() {
                       <FormField control={form.control} name="carpet_area" render={({ field }) => (
                           <FormItem>
                               <FormLabel>Carpet Area (sq ft)</FormLabel>
-                              <FormControl><Input placeholder="e.g., 900" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormControl><Input type="number" placeholder="e.g., 900" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                               <FormMessage />
                           </FormItem>
                        )} />
@@ -835,8 +857,12 @@ export default function AddPropertyPage() {
                       <FormField control={form.control} name="approvals" render={({ field }) => (
                           <FormItem>
                               <FormLabel>Building Approvals</FormLabel>
-                              <FormControl><Input placeholder="e.g., GHMC, LRS" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                              <FormDescription>Comma separated if multiple</FormDescription>
+                              <Select onValueChange={field.onChange} defaultValue={field.value ?? undefined} disabled={isLoading}>
+                                  <FormControl><SelectTrigger><SelectValue placeholder="Select approval type" /></SelectTrigger></FormControl>
+                                  <SelectContent>
+                                      {approvalsOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                  </SelectContent>
+                              </Select>
                               <FormMessage />
                           </FormItem>
                       )} />
