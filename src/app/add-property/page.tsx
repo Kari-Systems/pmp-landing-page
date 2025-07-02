@@ -30,8 +30,14 @@ const propertySchema = z.object({
   images: z.any()
     .refine((files) => files?.length >= 0, "Images are required.")
     .refine((files) => files?.length <= 5, "You can upload a maximum of 5 images.")
-    .refine((files) => Array.from(files).every((file: any) => file.size <= MAX_FILE_SIZE), `Max file size is 5MB.`)
-    .refine((files) => Array.from(files).every((file: any) => ACCEPTED_IMAGE_TYPES.includes(file.type)), "Only .jpg, .jpeg, .png and .webp formats are supported."),
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return Array.from(files).every((file: any) => file.size <= MAX_FILE_SIZE);
+    }, `Max file size is 5MB.`)
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return Array.from(files).every((file: any) => ACCEPTED_IMAGE_TYPES.includes(file.type));
+    }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
   property_type: z.enum(["Flat", "Villa", "Plot", "Commercial", "Other"]),
   property_used_type: z.string().optional().nullable(),
   property_age: z.string().min(1, {message: "Required"}).optional().nullable(),
