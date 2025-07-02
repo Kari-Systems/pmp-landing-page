@@ -2,8 +2,9 @@
 import { PageContainer, Section } from "@/components/layout/page-container";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
+import { Check, PlusCircle } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "AI WhatsApp Auto-Responder for Agents",
@@ -39,14 +40,18 @@ export default function AiResponderPage() {
                 </li>
               ))}
             </ul>
+             <p className="text-center text-muted-foreground pt-4">Interested in listing your own property first?</p>
           </CardContent>
           <CardFooter>
             <Button
+              asChild
               size="lg"
-              className="w-full bg-[#ff9900] hover:bg-[#ff9900]/90 text-white rounded-full text-lg font-bold shadow-md transition-transform hover:scale-105"
+              className="w-full bg-primary hover:bg-primary/90 text-white rounded-full text-lg font-bold shadow-md transition-transform hover:scale-105"
             >
-              <span role="img" aria-label="pointing right" className="mr-2">👉</span>
-              Get Early Access
+              <Link href="/add-property">
+                 <PlusCircle className="mr-2 h-5 w-5" />
+                 Add Your Property Now
+              </Link>
             </Button>
           </CardFooter>
         </Card>

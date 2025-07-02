@@ -24,6 +24,7 @@ export const siteConfig: SiteConfig = {
   ogImage: "https://postmyproperty.example.com/og.png", // Replace with actual OG image
   navItems: [
     { title: "Home", href: "/" },
+    { title: "Add Property", href: "/add-property" },
     { title: "Features", href: "/features" },
     { title: "Status", href: "/status" },
     { title: "About", href: "/about" },
