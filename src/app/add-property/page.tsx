@@ -116,30 +116,41 @@ export default function AddPropertyPage() {
 
   const propertyType = form.watch("property_type");
   const priceValue = form.watch("price");
-  const length = form.watch("length");
-  const breadth = form.watch("breadth");
+
+  const numberToWordsIndian = (price: string) => {
+      const num = Number(String(price).replace(/,/g, ''));
+      if (isNaN(num) || num <= 0) return '';
+
+      const crore = Math.floor(num / 10000000);
+      const lakh = Math.floor((num % 10000000) / 100000);
+      const remainder = num % 100000;
+
+      let words = '';
+      if (crore > 0) {
+          words += `${toWords(crore)} Crore `;
+      }
+      if (lakh > 0) {
+          words += `${toWords(lakh)} Lakh `;
+      }
+      if (remainder > 0) {
+          words += toWords(remainder);
+      }
+
+      if (words.trim() === '') return '';
+
+      const finalString = words.trim().replace(/\s\s+/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+      return `${finalString} Rupees Only`;
+  };
+
 
   React.useEffect(() => {
     try {
-      const num = parseInt(priceValue?.replace(/,/g, ''));
-      if (!isNaN(num) && num > 0) {
-        setPriceInWords(toWords(num) + " Rupees Only");
-      } else {
-        setPriceInWords("");
-      }
+      const words = numberToWordsIndian(priceValue);
+      setPriceInWords(words);
     } catch (e) {
       setPriceInWords("");
     }
   }, [priceValue]);
-  
-  React.useEffect(() => {
-    const l = parseFloat(length || '0');
-    const b = parseFloat(breadth || '0');
-    if (l > 0 && b > 0) {
-      form.setValue('area', (l * b).toString());
-    }
-  }, [length, breadth, form]);
-
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -503,14 +514,40 @@ export default function AddPropertyPage() {
                           <FormField control={form.control} name="length" render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Length</FormLabel>
-                                  <FormControl><Input placeholder="e.g., 60" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                                  <FormControl><Input 
+                                      placeholder="e.g., 60" 
+                                      {...field} 
+                                      value={field.value ?? ""} 
+                                      disabled={isLoading}
+                                      onChange={(e) => {
+                                          field.onChange(e);
+                                          const l = parseFloat(e.target.value) || 0;
+                                          const b = parseFloat(form.getValues('breadth') || '0');
+                                          if (l > 0 && b > 0) {
+                                              form.setValue('area', (l * b).toFixed(2));
+                                          }
+                                      }}
+                                  /></FormControl>
                                   <FormMessage />
                               </FormItem>
                           )} />
                           <FormField control={form.control} name="breadth" render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Breadth</FormLabel>
-                                  <FormControl><Input placeholder="e.g., 30" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                                  <FormControl><Input 
+                                      placeholder="e.g., 30" 
+                                      {...field} 
+                                      value={field.value ?? ""} 
+                                      disabled={isLoading} 
+                                      onChange={(e) => {
+                                          field.onChange(e);
+                                          const b = parseFloat(e.target.value) || 0;
+                                          const l = parseFloat(form.getValues('length') || '0');
+                                          if (l > 0 && b > 0) {
+                                              form.setValue('area', (l * b).toFixed(2));
+                                          }
+                                      }}
+                                  /></FormControl>
                                   <FormMessage />
                               </FormItem>
                           )} />
@@ -519,7 +556,25 @@ export default function AddPropertyPage() {
                            <FormField control={form.control} name="area" render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Total Area</FormLabel>
-                                  <FormControl><Input placeholder="e.g., 1800" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                                  <FormControl><Input 
+                                      placeholder="e.g., 1800" 
+                                      {...field} 
+                                      value={field.value ?? ""} 
+                                      disabled={isLoading} 
+                                      onChange={(e) => {
+                                          field.onChange(e);
+                                          const a = parseFloat(e.target.value) || 0;
+                                          const l = parseFloat(form.getValues('length') || '0');
+                                          const b = parseFloat(form.getValues('breadth') || '0');
+                                          if (a > 0) {
+                                              if (l > 0) {
+                                                  form.setValue('breadth', (a / l).toFixed(2));
+                                              } else if (b > 0) {
+                                                  form.setValue('length', (a / b).toFixed(2));
+                                              }
+                                          }
+                                      }}
+                                  /></FormControl>
                                   <FormMessage />
                               </FormItem>
                            )} />
