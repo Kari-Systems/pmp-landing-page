@@ -3,15 +3,11 @@
 
 import type { PropsWithChildren } from 'react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { type ThemeProviderProps } from "next-themes/dist/types"
 
-export function ThemeProvider({ children }: PropsWithChildren) {
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
+    <NextThemesProvider {...props}>
       {children}
     </NextThemesProvider>
   );

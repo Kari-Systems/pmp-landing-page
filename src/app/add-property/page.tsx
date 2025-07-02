@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 import { addDays } from "date-fns";
 import { GeoPoint, Timestamp, doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
+import { toWords } from 'number-to-words';
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -38,10 +39,11 @@ const propertySchema = z.object({
       if (!files || files.length === 0) return true;
       return Array.from(files).every((file: any) => ACCEPTED_IMAGE_TYPES.includes(file.type));
     }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
-  property_type: z.enum(["Flat", "Villa", "Plot", "Commercial", "Other"]),
+  property_type: z.enum(["house", "open_plot"]),
   property_used_type: z.string().optional().nullable(),
   property_age: z.string().min(1, {message: "Required"}).optional().nullable(),
   address: z.string().min(10, { message: "Address must be at least 10 characters." }),
+  city: z.string().min(1, { message: "City is required." }),
   locality: z.string().min(3, { message: "Locality must be at least 3 characters." }),
   area: z.string().min(1, { message: "Area is required." }),
   carpet_area: z.string().optional().nullable(),
@@ -56,26 +58,35 @@ const propertySchema = z.object({
   demographic_insights: z.string().optional().nullable(),
   length: z.string().optional().nullable(),
   breadth: z.string().optional().nullable(),
+  plot_area_units: z.string().optional().nullable(),
   boundary_wall: z.boolean().optional().nullable(),
   corner_plot: z.boolean().optional().nullable(),
   approvals: z.string().optional().nullable(),
   private_garden_terrace_area: z.string().optional().nullable(),
   villa_type: z.string().optional().nullable(),
   plot_area: z.string().optional().nullable(),
-  floor_number: z.coerce.number().optional().nullable(),
+  floor_number: z.string().optional().nullable(),
   total_floors: z.coerce.number().optional().nullable(),
-  uds: z.string().min(1, {message: "Required"}),
-  bedrooms: z.coerce.number().optional().nullable(),
-  bathrooms: z.coerce.number().optional().nullable(),
+  uds: z.string().optional().nullable(),
+  bedrooms: z.string().optional().nullable(),
+  bathrooms: z.string().optional().nullable(),
   balconies: z.string().optional().nullable(),
   facing: z.enum(["East", "West", "North", "South", "NE", "NW", "SE", "SW", "Other"]),
-  furnishing: z.enum(["Unfurnished", "Semi-Furnished", "Furnished"]),
+  furnishing: z.enum(["Unfurnished", "Semi-Furnished", "Furnished"]).optional().nullable(),
   amenities: z.string().optional().nullable(),
   facilities: z.string().optional().nullable(),
   availability_status: z.string().optional().nullable(),
   ownership: z.string().optional().nullable(),
   parking: z.string().optional().nullable(),
-});
+}).superRefine((data, ctx) => {
+    if (data.property_type === 'house' && !data.uds) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "UDS is required for houses.",
+        path: ['uds'],
+      });
+    }
+  });
 
 type PropertyFormValues = z.infer<typeof propertySchema>;
 
@@ -83,25 +94,72 @@ export default function AddPropertyPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [imagePreviews, setImagePreviews] = React.useState<string[]>([]);
-  
+  const [imagePreviews, setImagePreviews] = React.useState<{url: string, file: File}[]>([]);
+  const [priceInWords, setPriceInWords] = React.useState("");
+
   const form = useForm<PropertyFormValues>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       is_public: true,
       images: undefined,
+      city: "Hyderabad",
+      plot_area_units: "Sq. Yards",
     },
   });
 
   const propertyType = form.watch("property_type");
+  const priceValue = form.watch("price");
+  const length = form.watch("length");
+  const breadth = form.watch("breadth");
+
+  React.useEffect(() => {
+    try {
+      const num = parseInt(priceValue?.replace(/,/g, ''));
+      if (!isNaN(num) && num > 0) {
+        setPriceInWords(toWords(num) + " Rupees");
+      } else {
+        setPriceInWords("");
+      }
+    } catch (e) {
+      setPriceInWords("");
+    }
+  }, [priceValue]);
+  
+  React.useEffect(() => {
+    const l = parseFloat(length || '0');
+    const b = parseFloat(breadth || '0');
+    if (l > 0 && b > 0) {
+      form.setValue('area', (l * b).toString());
+    }
+  }, [length, breadth, form]);
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newPreviews = Array.from(files).map(file => URL.createObjectURL(file));
-      setImagePreviews(newPreviews);
-      form.setValue("images", files as any);
+      const currentFiles = form.getValues("images") || [];
+      const newFiles = Array.from(files);
+      const allFiles = [...currentFiles, ...newFiles];
+
+      if (allFiles.length > 5) {
+        toast({ title: "Error", description: "You can upload a maximum of 5 images.", variant: "destructive" });
+        return;
+      }
+      
+      const newPreviews = newFiles.map(file => ({
+        url: URL.createObjectURL(file),
+        file: file
+      }));
+      setImagePreviews(prev => [...prev, ...newPreviews]);
+      form.setValue("images", allFiles as any);
     }
+  };
+
+  const handleImageDelete = (indexToDelete: number) => {
+    setImagePreviews(prev => prev.filter((_, i) => i !== indexToDelete));
+    const currentFiles = form.getValues("images") || [];
+    const updatedFiles = currentFiles.filter((_: any, i: number) => i !== indexToDelete);
+    form.setValue("images", updatedFiles);
   };
 
   async function onSubmit(values: PropertyFormValues) {
@@ -111,7 +169,6 @@ export default function AddPropertyPage() {
       const createdAt = Timestamp.now();
       const validityEnd = Timestamp.fromDate(addDays(createdAt.toDate(), 30));
 
-      // 1. Upload images to Firebase Storage
       let imageUrls: string[] = [];
       if (values.images && values.images.length > 0) {
         for (const file of Array.from(values.images as FileList)) {
@@ -122,7 +179,6 @@ export default function AddPropertyPage() {
         }
       }
 
-      // 2. Prepare data for Firestore
       const propertyData = {
         id,
         images: imageUrls,
@@ -142,29 +198,31 @@ export default function AddPropertyPage() {
         validity_end: validityEnd,
         is_public: values.is_public,
         paid: false,
-        duplicate_hash: null, // As requested
+        duplicate_hash: null,
         price: values.price,
         neighborhood_boundaries: values.neighborhood_boundaries || null,
         average_property_price: values.average_property_price || null,
         proximity_to_amenities: values.proximity_to_amenities || null,
         demographic_insights: values.demographic_insights || null,
+        city: values.city,
         locality: values.locality,
         length: values.length || null,
         breadth: values.breadth || null,
+        plot_area_units: values.plot_area_units || null,
         boundary_wall: values.boundary_wall ?? null,
         corner_plot: values.corner_plot ?? null,
         approvals: values.approvals || null,
         private_garden_terrace_area: values.private_garden_terrace_area || null,
         villa_type: values.villa_type || null,
         plot_area: values.plot_area || null,
-        floor_number: values.floor_number ?? null,
+        floor_number: values.floor_number || null,
         total_floors: values.total_floors ?? null,
-        uds: values.uds,
-        bedrooms: values.bedrooms ?? null,
-        bathrooms: values.bathrooms ?? null,
-        balconies: values.balconies || null,
+        uds: values.property_type === 'house' ? values.uds : null,
+        bedrooms: propertyType !== 'open_plot' ? values.bedrooms : null,
+        bathrooms: propertyType !== 'open_plot' ? values.bathrooms : null,
+        balconies: propertyType !== 'open_plot' ? values.balconies : null,
         facing: values.facing,
-        furnishing: values.furnishing,
+        furnishing: propertyType !== 'open_plot' ? values.furnishing : null,
         amenities: values.amenities || null,
         facilities: values.facilities || null,
         availability_status: values.availability_status || null,
@@ -172,7 +230,6 @@ export default function AddPropertyPage() {
         parking: values.parking || null,
       };
 
-      // 3. Save to Firestore
       await setDoc(doc(db, "properties", id), propertyData);
 
       toast({
@@ -203,7 +260,6 @@ export default function AddPropertyPage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
-            {/* Basic Info */}
             <Card>
               <CardHeader><CardTitle>1. Basic Information</CardTitle></CardHeader>
               <CardContent className="space-y-6">
@@ -213,7 +269,8 @@ export default function AddPropertyPage() {
                     <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
                       <FormControl><SelectTrigger><SelectValue placeholder="Select property type" /></SelectTrigger></FormControl>
                       <SelectContent>
-                        {["Flat", "Villa", "Plot", "Commercial", "Other"].map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                        <SelectItem value="house">House / Independent House</SelectItem>
+                        <SelectItem value="open_plot">Open Plot</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -230,6 +287,7 @@ export default function AddPropertyPage() {
                   <FormItem>
                     <FormLabel>Price (in Rs.)</FormLabel>
                     <FormControl><Input placeholder="e.g., 50,00,000" {...field} disabled={isLoading} /></FormControl>
+                    {priceInWords && <p className="text-sm text-muted-foreground capitalize pt-2">{priceInWords}</p>}
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -250,7 +308,14 @@ export default function AddPropertyPage() {
                     <FormMessage />
                     {imagePreviews.length > 0 && (
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
-                        {imagePreviews.map((src, i) => <img key={i} src={src} alt={`Preview ${i+1}`} className="w-full h-24 object-cover rounded-md"/>)}
+                        {imagePreviews.map((preview, i) => (
+                            <div key={i} className="relative">
+                                <img src={preview.url} alt={`Preview ${i+1}`} className="w-full h-24 object-cover rounded-md"/>
+                                <Button type="button" size="icon" variant="destructive" className="absolute top-1 right-1 h-6 w-6 z-10" onClick={() => handleImageDelete(i)}>
+                                    <X className="h-4 w-4"/>
+                                </Button>
+                            </div>
+                        ))}
                       </div>
                     )}
                   </FormItem>
@@ -258,7 +323,6 @@ export default function AddPropertyPage() {
               </CardContent>
             </Card>
             
-            {/* Location */}
             <Card>
               <CardHeader><CardTitle>2. Location Details</CardTitle></CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -269,14 +333,25 @@ export default function AddPropertyPage() {
                     <FormMessage />
                   </FormItem>
                 )} />
+                <FormField control={form.control} name="city" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select city" /></SelectTrigger></FormControl>
+                            <SelectContent><SelectItem value="Hyderabad">Hyderabad</SelectItem></SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )} />
                 <FormField control={form.control} name="locality" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Locality / Area</FormLabel>
-                    <FormControl><Input placeholder="e.g., Madhapur" {...field} disabled={isLoading} /></FormControl>
+                    <FormControl><Input placeholder="e.g., Madhapur (or type a new one)" {...field} disabled={isLoading} /></FormControl>
+                    <FormDescription>Start typing to see suggestions or add a new locality.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )} />
-                 <div className="grid grid-cols-2 gap-4">
+                 <div className="md:col-span-2 grid grid-cols-2 gap-4">
                     <FormField control={form.control} name="latitude" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Latitude (Optional)</FormLabel>
@@ -295,66 +370,58 @@ export default function AddPropertyPage() {
               </CardContent>
             </Card>
 
-            {/* Property Specifics */}
-            {(propertyType === "Flat" || propertyType === "Villa" || propertyType === "Commercial") && (
+            {/* Property Specifics - Conditional */}
+            {propertyType !== 'open_plot' && (
               <Card>
                 <CardHeader><CardTitle>3. Property Specifications</CardTitle></CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    { (propertyType === 'Flat' || propertyType === 'Villa') && <>
-                         <FormField control={form.control} name="bedrooms" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Bedrooms</FormLabel>
-                                <FormControl><Input type="number" placeholder="e.g., 3" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                         )} />
-                         <FormField control={form.control} name="bathrooms" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Bathrooms</FormLabel>
-                                <FormControl><Input type="number" placeholder="e.g., 2" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="balconies" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Balconies</FormLabel>
-                                <FormControl><Input placeholder="e.g., 2" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                         )} />
-                    </> }
-
-                    { propertyType === 'Flat' && <>
-                        <FormField control={form.control} name="floor_number" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Floor Number</FormLabel>
-                                <FormControl><Input type="number" placeholder="e.g., 5" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="total_floors" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Total Floors</FormLabel>
-                                <FormControl><Input type="number" placeholder="e.g., 12" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                    </>}
-
-                    { propertyType === 'Villa' && <>
-                        <FormField control={form.control} name="villa_type" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Villa Type</FormLabel>
-                                <FormControl><Input placeholder="e.g., Duplex" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                    </>}
-                    
+                    <FormField control={form.control} name="bedrooms" render={({ field }) => (
+                       <FormItem>
+                         <FormLabel>Bedrooms</FormLabel>
+                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                           <FormControl><SelectTrigger><SelectValue placeholder="Select bedrooms" /></SelectTrigger></FormControl>
+                           <SelectContent>
+                             {['1', '2', '3', '4', '5+'].map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                           </SelectContent>
+                         </Select>
+                         <FormMessage />
+                       </FormItem>
+                    )} />
+                    <FormField control={form.control} name="bathrooms" render={({ field }) => (
+                       <FormItem>
+                         <FormLabel>Bathrooms</FormLabel>
+                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                           <FormControl><SelectTrigger><SelectValue placeholder="Select bathrooms" /></SelectTrigger></FormControl>
+                           <SelectContent>
+                             {['1', '2', '3', '4', '5+'].map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                           </SelectContent>
+                         </Select>
+                         <FormMessage />
+                       </FormItem>
+                    )} />
+                    <FormField control={form.control} name="balconies" render={({ field }) => (
+                       <FormItem>
+                         <FormLabel>Balconies</FormLabel>
+                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                           <FormControl><SelectTrigger><SelectValue placeholder="Select balconies" /></SelectTrigger></FormControl>
+                           <SelectContent>
+                             {['0', '1', '2', '3', '4'].map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+                           </SelectContent>
+                         </Select>
+                         <FormMessage />
+                       </FormItem>
+                    )} />
+                    <FormField control={form.control} name="floor_number" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Floor Number</FormLabel>
+                            <FormControl><Input placeholder="e.g., 5" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
                     <FormField control={form.control} name="furnishing" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Furnishing</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                            <Select onValueChange={field.onChange} defaultValue={field.value ?? undefined} disabled={isLoading}>
                             <FormControl><SelectTrigger><SelectValue placeholder="Select furnishing" /></SelectTrigger></FormControl>
                             <SelectContent>
                                 {["Unfurnished", "Semi-Furnished", "Furnished"].map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}
@@ -363,55 +430,67 @@ export default function AddPropertyPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
-
-                    <FormField control={form.control} name="facing" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Facing</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
-                                <FormControl><SelectTrigger><SelectValue placeholder="Select direction" /></SelectTrigger></FormControl>
-                                <SelectContent>
-                                    {["East", "West", "North", "South", "NE", "NW", "SE", "SW", "Other"].map(dir => <SelectItem key={dir} value={dir}>{dir}</SelectItem>)}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                     <FormField control={form.control} name="uds" render={({ field }) => (
-                      <FormItem>
-                          <FormLabel>UDS (Undivided Share)</FormLabel>
-                          <FormControl><Input placeholder="e.g., 50 sq yards" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                          <FormMessage />
-                      </FormItem>
-                    )} />
+                     { propertyType === 'house' &&
+                        <FormField control={form.control} name="uds" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>UDS (Undivided Share)</FormLabel>
+                              <FormControl><Input placeholder="e.g., 50 sq yards" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormMessage />
+                          </FormItem>
+                        )} />
+                     }
                 </CardContent>
               </Card>
             )}
 
-            {/* Plot Specifics */}
-            {propertyType === "Plot" && (
+            {/* Plot Specifics - Conditional */}
+            {propertyType === "open_plot" && (
                 <Card>
                     <CardHeader><CardTitle>3. Plot Specifications</CardTitle></CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField control={form.control} name="plot_area" render={({ field }) => (
+                       <div className="grid grid-cols-2 gap-2">
+                          <FormField control={form.control} name="length" render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Length</FormLabel>
+                                  <FormControl><Input placeholder="e.g., 60" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )} />
+                          <FormField control={form.control} name="breadth" render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Breadth</FormLabel>
+                                  <FormControl><Input placeholder="e.g., 30" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )} />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                           <FormField control={form.control} name="area" render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Total Area</FormLabel>
+                                  <FormControl><Input placeholder="e.g., 1800" {...field} disabled={isLoading} /></FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                           )} />
+                           <FormField control={form.control} name="plot_area_units" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Plot Area (sq yards)</FormLabel>
-                                <FormControl><Input placeholder="e.g., 200" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                                <FormLabel>Units</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="Units" /></SelectTrigger></FormControl>
+                                    <SelectContent>
+                                        {["Sq. Yards", "Sq. Meters", "Acres", "Guntas"].map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
-                        )} />
-                        <FormField control={form.control} name="length" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Length (ft)</FormLabel>
-                                <FormControl><Input placeholder="e.g., 60" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="breadth" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Breadth (ft)</FormLabel>
-                                <FormControl><Input placeholder="e.g., 30" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
+                           )} />
+                        </div>
+                        <FormField control={form.control} name="approvals" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Approvals</FormLabel>
+                              <FormControl><Input placeholder="e.g., HMDA, DTCP" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormMessage />
+                          </FormItem>
                         )} />
                         <FormField control={form.control} name="facing" render={({ field }) => (
                             <FormItem>
@@ -446,20 +525,24 @@ export default function AddPropertyPage() {
             <Card>
                 <CardHeader><CardTitle>4. Additional Details</CardTitle></CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <FormField control={form.control} name="area" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Total Area (sq ft)</FormLabel>
-                            <FormControl><Input placeholder="e.g., 1200" {...field} disabled={isLoading} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                     )} />
-                    <FormField control={form.control} name="carpet_area" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Carpet Area (sq ft)</FormLabel>
-                            <FormControl><Input placeholder="e.g., 900" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                     )} />
+                    { propertyType !== 'open_plot' &&
+                      <FormField control={form.control} name="area" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Total Area (sq ft)</FormLabel>
+                              <FormControl><Input placeholder="e.g., 1200" {...field} disabled={isLoading} /></FormControl>
+                              <FormMessage />
+                          </FormItem>
+                       )} />
+                    }
+                    { propertyType !== 'open_plot' &&
+                      <FormField control={form.control} name="carpet_area" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Carpet Area (sq ft)</FormLabel>
+                              <FormControl><Input placeholder="e.g., 900" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormMessage />
+                          </FormItem>
+                       )} />
+                    }
                     <FormField control={form.control} name="property_age" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Property Age</FormLabel>
@@ -488,6 +571,7 @@ export default function AddPropertyPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
+                    { propertyType !== 'open_plot' &&
                     <FormField control={form.control} name="approvals" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Approvals</FormLabel>
@@ -495,8 +579,9 @@ export default function AddPropertyPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
+                    }
                     <FormField control={form.control} name="amenities" render={({ field }) => (
-                        <FormItem className="md:col-span-3">
+                        <FormItem className="md:col-span-full">
                             <FormLabel>Amenities (comma separated)</FormLabel>
                             <FormControl><Input placeholder="e.g., Gym, Swimming Pool, Clubhouse" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                             <FormMessage />
@@ -505,7 +590,6 @@ export default function AddPropertyPage() {
                 </CardContent>
             </Card>
 
-            {/* Publishing */}
             <Card>
               <CardHeader><CardTitle>5. Publishing</CardTitle></CardHeader>
               <CardContent>

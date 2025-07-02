@@ -4,10 +4,10 @@ import './globals.css';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppFooter } from '@/components/layout/app-footer';
 import { Toaster } from '@/components/ui/toaster';
-// import { EarlyAccessButton } from '@/components/shared/early-access-button';
 import { siteConfig } from '@/config/site';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { PageTransition } from '@/components/layout/page-transition';
+import { AddPropertyCtaButton } from '@/components/shared/add-property-cta-button';
 
 export const metadata: Metadata = {
   title: {
@@ -64,7 +64,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-screen bg-background font-body antialiased">
-        <ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="relative flex min-h-screen flex-col">
             <AppHeader />
             <main className="flex-1">
@@ -73,7 +73,7 @@ export default function RootLayout({
             <AppFooter />
           </div>
           <Toaster />
-          {/* <EarlyAccessButton /> */}
+          <AddPropertyCtaButton />
         </ThemeProvider>
       </body>
     </html>

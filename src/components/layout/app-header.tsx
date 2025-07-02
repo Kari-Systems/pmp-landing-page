@@ -2,15 +2,16 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Rocket, PlusCircle } from "lucide-react";
+import { Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-import { siteConfig, type NavItem } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SiteLogo } from "@/components/shared/SiteLogo";
+import { ThemeToggle } from "./theme-toggle";
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -38,12 +39,9 @@ export function AppHeader() {
         </nav>
         <div className="flex-1" />
         
-        <Button asChild size="sm" className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
-          <Link href="/add-property">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Property
-          </Link>
-        </Button>
+        <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
+        </div>
         
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
@@ -72,6 +70,9 @@ export function AppHeader() {
                   {item.title}
                 </Link>
               ))}
+               <div className="pt-4">
+                  <ThemeToggle />
+              </div>
             </div>
           </SheetContent>
         </Sheet>
