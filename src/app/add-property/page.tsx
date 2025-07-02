@@ -117,8 +117,7 @@ export default function AddPropertyPage() {
   const [imagePreviews, setImagePreviews] = React.useState<{url: string, file: File}[]>([]);
   const [priceInWords, setPriceInWords] = React.useState("");
 
-  const [lengthUnit, setLengthUnit] = React.useState("feet");
-  const [breadthUnit, setBreadthUnit] = React.useState("feet");
+  const [dimensionUnit, setDimensionUnit] = React.useState("feet");
   const [lastChangedSource, setLastChangedSource] = React.useState<"dims" | "area" | null>(null);
 
   const form = useForm<PropertyFormValues>({
@@ -145,8 +144,8 @@ export default function AddPropertyPage() {
       const areaVal = parseFloat(getValues('area') || '0');
       const areaUnit = getValues('plot_area_units') || 'Sq. Yards';
 
-      const lengthInFeet = lengthUnit === 'meters' ? lengthVal * CONVERSIONS.METERS_TO_FEET : lengthVal;
-      const breadthInFeet = breadthUnit === 'meters' ? breadthVal * CONVERSIONS.METERS_TO_FEET : breadthVal;
+      const lengthInFeet = dimensionUnit === 'meters' ? lengthVal * CONVERSIONS.METERS_TO_FEET : lengthVal;
+      const breadthInFeet = dimensionUnit === 'meters' ? breadthVal * CONVERSIONS.METERS_TO_FEET : breadthVal;
 
       if (lastChangedSource === 'dims') {
           const areaInSqFeet = lengthInFeet * breadthInFeet;
@@ -164,14 +163,14 @@ export default function AddPropertyPage() {
           if (areaInSqFeet > 0) {
               if (lengthInFeet > 0) {
                   const newBreadthInFeet = areaInSqFeet / lengthInFeet;
-                  const newBreadth = breadthUnit === 'meters' ? newBreadthInFeet * CONVERSIONS.FEET_TO_METERS : newBreadthInFeet;
+                  const newBreadth = dimensionUnit === 'meters' ? newBreadthInFeet * CONVERSIONS.FEET_TO_METERS : newBreadthInFeet;
                    if (Math.abs(newBreadth - breadthVal) > 0.01) {
                      setValue('breadth', newBreadth.toFixed(2));
                    }
               } else {
                   const sideInFeet = Math.sqrt(areaInSqFeet);
-                  const newLength = lengthUnit === 'meters' ? sideInFeet * CONVERSIONS.FEET_TO_METERS : sideInFeet;
-                  const newBreadth = breadthUnit === 'meters' ? sideInFeet * CONVERSIONS.FEET_TO_METERS : sideInFeet;
+                  const newLength = dimensionUnit === 'meters' ? sideInFeet * CONVERSIONS.FEET_TO_METERS : sideInFeet;
+                  const newBreadth = dimensionUnit === 'meters' ? sideInFeet * CONVERSIONS.FEET_TO_METERS : sideInFeet;
                   if (Math.abs(newLength - lengthVal) > 0.01) {
                     setValue('length', newLength.toFixed(2));
                   }
@@ -182,7 +181,7 @@ export default function AddPropertyPage() {
           }
       }
       setLastChangedSource(null); // Reset after calculation
-  }, [watchedPlotFields, lengthUnit, breadthUnit, lastChangedSource, getValues, setValue]);
+  }, [watchedPlotFields, dimensionUnit, lastChangedSource, getValues, setValue]);
 
 
   const numberToWordsIndian = (price: string) => {
@@ -577,11 +576,11 @@ export default function AddPropertyPage() {
             {propertyType === "plot" && (
                 <Card>
                     <CardHeader><CardTitle>3. Plot Specifications</CardTitle></CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField control={form.control} name="length" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Length</FormLabel>
-                                <div className="flex items-center gap-2">
+                    <CardContent className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                            <FormField control={form.control} name="length" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Length</FormLabel>
                                     <FormControl>
                                         <Input 
                                             placeholder="e.g., 60" 
@@ -594,33 +593,13 @@ export default function AddPropertyPage() {
                                             }}
                                         />
                                     </FormControl>
-                                    <Select value={lengthUnit} onValueChange={(newUnit) => {
-                                        const value = parseFloat(getValues('length') || '0');
-                                        if (value > 0) {
-                                            if (lengthUnit === 'feet' && newUnit === 'meters') {
-                                                setValue('length', (value * CONVERSIONS.FEET_TO_METERS).toFixed(2));
-                                            } else if (lengthUnit === 'meters' && newUnit === 'feet') {
-                                                setValue('length', (value * CONVERSIONS.METERS_TO_FEET).toFixed(2));
-                                            }
-                                        }
-                                        setLengthUnit(newUnit);
-                                        setLastChangedSource("dims");
-                                    }}>
-                                        <SelectTrigger className="w-[100px]"><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="feet">Feet</SelectItem>
-                                            <SelectItem value="meters">Meters</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-
-                        <FormField control={form.control} name="breadth" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Breadth</FormLabel>
-                                <div className="flex items-center gap-2">
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+    
+                            <FormField control={form.control} name="breadth" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Breadth</FormLabel>
                                     <FormControl>
                                         <Input 
                                             placeholder="e.g., 30" 
@@ -633,30 +612,47 @@ export default function AddPropertyPage() {
                                             }}
                                         />
                                     </FormControl>
-                                     <Select value={breadthUnit} onValueChange={(newUnit) => {
-                                        const value = parseFloat(getValues('breadth') || '0');
-                                        if (value > 0) {
-                                            if (breadthUnit === 'feet' && newUnit === 'meters') {
-                                                setValue('breadth', (value * CONVERSIONS.FEET_TO_METERS).toFixed(2));
-                                            } else if (breadthUnit === 'meters' && newUnit === 'feet') {
-                                                setValue('breadth', (value * CONVERSIONS.METERS_TO_FEET).toFixed(2));
-                                            }
-                                        }
-                                        setBreadthUnit(newUnit);
-                                        setLastChangedSource("dims");
-                                    }}>
-                                        <SelectTrigger className="w-[100px]"><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="feet">Feet</SelectItem>
-                                            <SelectItem value="meters">Meters</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                             <FormItem>
+                                <FormLabel>Dimension Units</FormLabel>
+                                <Select value={dimensionUnit} onValueChange={(newUnit) => {
+                                    if (newUnit === dimensionUnit) return;
 
-                       <div className="grid grid-cols-1 gap-2 md:col-span-2">
+                                    const lengthVal = parseFloat(getValues('length') || '0');
+                                    const breadthVal = parseFloat(getValues('breadth') || '0');
+
+                                    const convertValue = (currentValue: number) => {
+                                        if (dimensionUnit === 'feet' && newUnit === 'meters') {
+                                            return currentValue * CONVERSIONS.FEET_TO_METERS;
+                                        }
+                                        if (dimensionUnit === 'meters' && newUnit === 'feet') {
+                                            return currentValue * CONVERSIONS.METERS_TO_FEET;
+                                        }
+                                        return currentValue;
+                                    };
+
+                                    if (lengthVal > 0) {
+                                        setValue('length', convertValue(lengthVal).toFixed(2));
+                                    }
+                                    if (breadthVal > 0) {
+                                        setValue('breadth', convertValue(breadthVal).toFixed(2));
+                                    }
+
+                                    setDimensionUnit(newUnit);
+                                    setLastChangedSource("dims");
+                                }}>
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="feet">Feet</SelectItem>
+                                        <SelectItem value="meters">Meters</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        </div>
+
+                       <div className="grid grid-cols-1 gap-2">
                            <FormField control={form.control} name="area" render={({ field }) => (
                               <FormItem>
                                   <FormLabel>Total Area</FormLabel>
@@ -701,38 +697,39 @@ export default function AddPropertyPage() {
                               </FormItem>
                            )} />
                         </div>
-
-                        <FormField control={form.control} name="approvals" render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Approvals</FormLabel>
-                              <FormControl><Input placeholder="e.g., HMDA, DTCP" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                              <FormMessage />
-                          </FormItem>
-                        )} />
-                        <FormField control={form.control} name="facing" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Facing</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="Select direction" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                        {["East", "West", "North", "South", "NE", "NW", "SE", "SW", "Other"].map(dir => <SelectItem key={dir} value={dir}>{dir}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="boundary_wall" render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5"><FormLabel>Boundary Wall Made</FormLabel></div>
-                            <FormControl><Checkbox checked={field.value ?? false} onCheckedChange={field.onChange} /></FormControl>
-                          </FormItem>
-                        )} />
-                         <FormField control={form.control} name="corner_plot" render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                            <div className="space-y-0.5"><FormLabel>Is it a Corner Plot?</FormLabel></div>
-                            <FormControl><Checkbox checked={field.value ?? false} onCheckedChange={field.onChange} /></FormControl>
-                          </FormItem>
-                        )} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <FormField control={form.control} name="approvals" render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Approvals</FormLabel>
+                                  <FormControl><Input placeholder="e.g., HMDA, DTCP" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                            )} />
+                            <FormField control={form.control} name="facing" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Facing</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="Select direction" /></SelectTrigger></FormControl>
+                                        <SelectContent>
+                                            {["East", "West", "North", "South", "NE", "NW", "SE", "SW", "Other"].map(dir => <SelectItem key={dir} value={dir}>{dir}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                            <FormField control={form.control} name="boundary_wall" render={({ field }) => (
+                              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                <div className="space-y-0.5"><FormLabel>Boundary Wall Made</FormLabel></div>
+                                <FormControl><Checkbox checked={field.value ?? false} onCheckedChange={field.onChange} /></FormControl>
+                              </FormItem>
+                            )} />
+                             <FormField control={form.control} name="corner_plot" render={({ field }) => (
+                              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                <div className="space-y-0.5"><FormLabel>Is it a Corner Plot?</FormLabel></div>
+                                <FormControl><Checkbox checked={field.value ?? false} onCheckedChange={field.onChange} /></FormControl>
+                              </FormItem>
+                            )} />
+                        </div>
                     </CardContent>
                 </Card>
             )}
