@@ -29,8 +29,8 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 const propertySchema = z.object({
   description: z.string().min(20, { message: "Description must be at least 20 characters." }),
   images: z.any()
-    .refine((files) => files?.length >= 0, "Images are required.")
-    .refine((files) => files?.length <= 5, "You can upload a maximum of 5 images.")
+    .refine((files) => files === undefined || files?.length >= 0, "Images are required.")
+    .refine((files) => files === undefined || files?.length <= 5, "You can upload a maximum of 5 images.")
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return Array.from(files).every((file: any) => file.size <= MAX_FILE_SIZE);
@@ -39,7 +39,7 @@ const propertySchema = z.object({
       if (!files || files.length === 0) return true;
       return Array.from(files).every((file: any) => ACCEPTED_IMAGE_TYPES.includes(file.type));
     }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
-  property_type: z.enum(["house", "open_plot"]),
+  property_type: z.enum(["flat", "house", "villa", "plot"]),
   property_used_type: z.string().optional().nullable(),
   property_age: z.string().min(1, {message: "Required"}).optional().nullable(),
   address: z.string().min(10, { message: "Address must be at least 10 characters." }),
@@ -66,7 +66,7 @@ const propertySchema = z.object({
   villa_type: z.string().optional().nullable(),
   plot_area: z.string().optional().nullable(),
   floor_number: z.string().optional().nullable(),
-  total_floors: z.coerce.number().optional().nullable(),
+  total_floors: z.string().optional().nullable(),
   uds: z.string().optional().nullable(),
   bedrooms: z.string().optional().nullable(),
   bathrooms: z.string().optional().nullable(),
@@ -82,9 +82,16 @@ const propertySchema = z.object({
     if (data.property_type === 'house' && !data.uds) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "UDS is required for houses.",
+        message: "UDS (Undivided Share) is required for House type.",
         path: ['uds'],
       });
+    }
+    if (data.property_type === 'flat' && !data.floor_number) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Floor number is required for Flat type.",
+            path: ['floor_number'],
+        });
     }
   });
 
@@ -116,7 +123,7 @@ export default function AddPropertyPage() {
     try {
       const num = parseInt(priceValue?.replace(/,/g, ''));
       if (!isNaN(num) && num > 0) {
-        setPriceInWords(toWords(num) + " Rupees");
+        setPriceInWords(toWords(num) + " Rupees Only");
       } else {
         setPriceInWords("");
       }
@@ -179,55 +186,72 @@ export default function AddPropertyPage() {
         }
       }
 
+      const isPlot = values.property_type === 'plot';
+      const isHouse = values.property_type === 'house';
+      const isVilla = values.property_type === 'villa';
+
       const propertyData = {
         id,
-        images: imageUrls,
-        contacted_leads: [],
-        shortlisted_leads: [],
-        description: values.description,
-        property_type: values.property_type,
-        property_used_type: values.property_used_type || null,
-        property_age: values.property_age || null,
-        address: values.address,
-        area: values.area,
-        carpet_area: values.carpet_area || null,
-        map_location: values.latitude && values.longitude ? new GeoPoint(values.latitude, values.longitude) : null,
         created_at: createdAt,
         updated_at: null,
-        expected_possession_date: values.expected_possession_date ? Timestamp.fromDate(values.expected_possession_date) : null,
         validity_end: validityEnd,
+        
+        description: values.description,
+        property_type: values.property_type,
+        price: values.price,
+        
+        address: values.address,
+        city: values.city,
+        locality: values.locality,
+        map_location: values.latitude && values.longitude ? new GeoPoint(values.latitude, values.longitude) : null,
+        
         is_public: values.is_public,
         paid: false,
         duplicate_hash: null,
-        price: values.price,
+
+        images: !isPlot ? imageUrls : [],
+        contacted_leads: [],
+        shortlisted_leads: [],
+
+        property_used_type: values.property_used_type || null,
+        property_age: values.property_age || null,
+        area: values.area,
+        facing: values.facing,
+        approvals: values.approvals || null,
+        ownership: values.ownership || null,
+        availability_status: values.availability_status || null,
+        expected_possession_date: values.expected_possession_date ? Timestamp.fromDate(values.expected_possession_date) : null,
+        
+        // Non-Plot Specifics
+        carpet_area: !isPlot ? values.carpet_area : null,
+        bedrooms: !isPlot ? values.bedrooms : null,
+        bathrooms: !isPlot ? values.bathrooms : null,
+        balconies: !isPlot ? values.balconies : null,
+        furnishing: !isPlot ? values.furnishing : null,
+        floor_number: !isPlot ? values.floor_number : null,
+        total_floors: !isPlot ? values.total_floors : null,
+        parking: !isPlot ? values.parking : null,
+        amenities: !isPlot ? values.amenities : null,
+        facilities: !isPlot ? values.facilities : null,
+        private_garden_terrace_area: !isPlot ? values.private_garden_terrace_area : null,
+        
+        // House/Villa Specifics
+        uds: (isHouse || isVilla) ? values.uds : null,
+        villa_type: isVilla ? values.villa_type : null,
+        
+        // Plot Specifics
+        length: isPlot ? values.length : null,
+        breadth: isPlot ? values.breadth : null,
+        plot_area: isPlot ? values.area : null,
+        plot_area_units: isPlot ? values.plot_area_units : null,
+        boundary_wall: isPlot ? values.boundary_wall ?? null : null,
+        corner_plot: isPlot ? values.corner_plot ?? null : null,
+
+        // Legacy fields for schema consistency, can be cleaned up later
         neighborhood_boundaries: values.neighborhood_boundaries || null,
         average_property_price: values.average_property_price || null,
         proximity_to_amenities: values.proximity_to_amenities || null,
         demographic_insights: values.demographic_insights || null,
-        city: values.city,
-        locality: values.locality,
-        length: values.length || null,
-        breadth: values.breadth || null,
-        plot_area_units: values.plot_area_units || null,
-        boundary_wall: values.boundary_wall ?? null,
-        corner_plot: values.corner_plot ?? null,
-        approvals: values.approvals || null,
-        private_garden_terrace_area: values.private_garden_terrace_area || null,
-        villa_type: values.villa_type || null,
-        plot_area: values.plot_area || null,
-        floor_number: values.floor_number || null,
-        total_floors: values.total_floors ?? null,
-        uds: values.property_type === 'house' ? values.uds : null,
-        bedrooms: propertyType !== 'open_plot' ? values.bedrooms : null,
-        bathrooms: propertyType !== 'open_plot' ? values.bathrooms : null,
-        balconies: propertyType !== 'open_plot' ? values.balconies : null,
-        facing: values.facing,
-        furnishing: propertyType !== 'open_plot' ? values.furnishing : null,
-        amenities: values.amenities || null,
-        facilities: values.facilities || null,
-        availability_status: values.availability_status || null,
-        ownership: values.ownership || null,
-        parking: values.parking || null,
       };
 
       await setDoc(doc(db, "properties", id), propertyData);
@@ -269,8 +293,10 @@ export default function AddPropertyPage() {
                     <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
                       <FormControl><SelectTrigger><SelectValue placeholder="Select property type" /></SelectTrigger></FormControl>
                       <SelectContent>
+                        <SelectItem value="flat">Flat</SelectItem>
                         <SelectItem value="house">House / Independent House</SelectItem>
-                        <SelectItem value="open_plot">Open Plot</SelectItem>
+                        <SelectItem value="villa">Villa</SelectItem>
+                        <SelectItem value="plot">Plot</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -287,39 +313,41 @@ export default function AddPropertyPage() {
                   <FormItem>
                     <FormLabel>Price (in Rs.)</FormLabel>
                     <FormControl><Input placeholder="e.g., 50,00,000" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                    {priceInWords && <p className="text-sm text-muted-foreground capitalize pt-2">{priceInWords}</p>}
+                    {priceInWords && <p className="text-sm font-medium text-muted-foreground capitalize pt-2">{priceInWords}</p>}
                     <FormMessage />
                   </FormItem>
                 )} />
-                <FormField control={form.control} name="images" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Property Images (Max 5)</FormLabel>
-                     <FormControl>
-                        <div className="relative">
-                            <Input id="images" type="file" multiple accept="image/*" onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isLoading}/>
-                            <label htmlFor="images" className="flex items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted">
-                                <div className="text-center">
-                                    <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
-                                    <p className="mt-2 text-sm text-muted-foreground">Click or drag files to upload</p>
-                                </div>
-                            </label>
+                {propertyType !== 'plot' && (
+                  <FormField control={form.control} name="images" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Property Images (Max 5)</FormLabel>
+                       <FormControl>
+                          <div className="relative">
+                              <Input id="images" type="file" multiple accept="image/*" onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isLoading}/>
+                              <label htmlFor="images" className="flex items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted">
+                                  <div className="text-center">
+                                      <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
+                                      <p className="mt-2 text-sm text-muted-foreground">Click or drag files to upload</p>
+                                  </div>
+                              </label>
+                          </div>
+                      </FormControl>
+                      <FormMessage />
+                      {imagePreviews.length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
+                          {imagePreviews.map((preview, i) => (
+                              <div key={i} className="relative">
+                                  <img src={preview.url} alt={`Preview ${i+1}`} className="w-full h-24 object-cover rounded-md"/>
+                                  <Button type="button" size="icon" variant="destructive" className="absolute top-1 right-1 h-6 w-6 z-10" onClick={() => handleImageDelete(i)}>
+                                      <X className="h-4 w-4"/>
+                                  </Button>
+                              </div>
+                          ))}
                         </div>
-                    </FormControl>
-                    <FormMessage />
-                    {imagePreviews.length > 0 && (
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
-                        {imagePreviews.map((preview, i) => (
-                            <div key={i} className="relative">
-                                <img src={preview.url} alt={`Preview ${i+1}`} className="w-full h-24 object-cover rounded-md"/>
-                                <Button type="button" size="icon" variant="destructive" className="absolute top-1 right-1 h-6 w-6 z-10" onClick={() => handleImageDelete(i)}>
-                                    <X className="h-4 w-4"/>
-                                </Button>
-                            </div>
-                        ))}
-                      </div>
-                    )}
-                  </FormItem>
-                )} />
+                      )}
+                    </FormItem>
+                  )} />
+                )}
               </CardContent>
             </Card>
             
@@ -370,15 +398,15 @@ export default function AddPropertyPage() {
               </CardContent>
             </Card>
 
-            {/* Property Specifics - Conditional */}
-            {propertyType !== 'open_plot' && (
+            {/* Property Specifics - For Flat, House, Villa */}
+            {(propertyType === 'flat' || propertyType === 'house' || propertyType === 'villa') && (
               <Card>
                 <CardHeader><CardTitle>3. Property Specifications</CardTitle></CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <FormField control={form.control} name="bedrooms" render={({ field }) => (
                        <FormItem>
                          <FormLabel>Bedrooms</FormLabel>
-                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                         <Select onValueChange={field.onChange} defaultValue={field.value ?? ""} disabled={isLoading}>
                            <FormControl><SelectTrigger><SelectValue placeholder="Select bedrooms" /></SelectTrigger></FormControl>
                            <SelectContent>
                              {['1', '2', '3', '4', '5+'].map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
@@ -390,7 +418,7 @@ export default function AddPropertyPage() {
                     <FormField control={form.control} name="bathrooms" render={({ field }) => (
                        <FormItem>
                          <FormLabel>Bathrooms</FormLabel>
-                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                         <Select onValueChange={field.onChange} defaultValue={field.value ?? ""} disabled={isLoading}>
                            <FormControl><SelectTrigger><SelectValue placeholder="Select bathrooms" /></SelectTrigger></FormControl>
                            <SelectContent>
                              {['1', '2', '3', '4', '5+'].map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
@@ -402,7 +430,7 @@ export default function AddPropertyPage() {
                     <FormField control={form.control} name="balconies" render={({ field }) => (
                        <FormItem>
                          <FormLabel>Balconies</FormLabel>
-                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                         <Select onValueChange={field.onChange} defaultValue={field.value ?? ""} disabled={isLoading}>
                            <FormControl><SelectTrigger><SelectValue placeholder="Select balconies" /></SelectTrigger></FormControl>
                            <SelectContent>
                              {['0', '1', '2', '3', '4'].map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
@@ -410,13 +438,6 @@ export default function AddPropertyPage() {
                          </Select>
                          <FormMessage />
                        </FormItem>
-                    )} />
-                    <FormField control={form.control} name="floor_number" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Floor Number</FormLabel>
-                            <FormControl><Input placeholder="e.g., 5" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
                     )} />
                     <FormField control={form.control} name="furnishing" render={({ field }) => (
                         <FormItem>
@@ -430,21 +451,51 @@ export default function AddPropertyPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
-                     { propertyType === 'house' &&
-                        <FormField control={form.control} name="uds" render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>UDS (Undivided Share)</FormLabel>
-                              <FormControl><Input placeholder="e.g., 50 sq yards" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                              <FormMessage />
-                          </FormItem>
-                        )} />
-                     }
+                    <FormField control={form.control} name="floor_number" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Floor Number</FormLabel>
+                            <FormControl><Input placeholder="e.g., 5 or G" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    <FormField control={form.control} name="total_floors" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Total Floors in Building</FormLabel>
+                            <FormControl><Input placeholder="e.g., 12" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    {(propertyType === 'house' || propertyType === 'villa') &&
+                      <FormField control={form.control} name="uds" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>UDS (Undivided Share)</FormLabel>
+                            <FormControl><Input placeholder="e.g., 50 sq yards" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                      )} />
+                    }
+                     {propertyType === 'villa' &&
+                      <FormField control={form.control} name="villa_type" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Villa Type</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value ?? ""} disabled={isLoading}>
+                                <FormControl><SelectTrigger><SelectValue placeholder="Select Villa Type" /></SelectTrigger></FormControl>
+                                <SelectContent>
+                                    <SelectItem value="Simplex">Simplex</SelectItem>
+                                    <SelectItem value="Duplex">Duplex</SelectItem>
+                                    <SelectItem value="Triplex">Triplex</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                      )} />
+                    }
                 </CardContent>
               </Card>
             )}
 
             {/* Plot Specifics - Conditional */}
-            {propertyType === "open_plot" && (
+            {propertyType === "plot" && (
                 <Card>
                     <CardHeader><CardTitle>3. Plot Specifications</CardTitle></CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -521,20 +572,19 @@ export default function AddPropertyPage() {
             )}
 
 
-            {/* Other Details */}
             <Card>
                 <CardHeader><CardTitle>4. Additional Details</CardTitle></CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    { propertyType !== 'open_plot' &&
+                    { propertyType !== 'plot' &&
                       <FormField control={form.control} name="area" render={({ field }) => (
                           <FormItem>
-                              <FormLabel>Total Area (sq ft)</FormLabel>
+                              <FormLabel>Total Built-up Area (sq ft)</FormLabel>
                               <FormControl><Input placeholder="e.g., 1200" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
                               <FormMessage />
                           </FormItem>
                        )} />
                     }
-                    { propertyType !== 'open_plot' &&
+                    { propertyType !== 'plot' &&
                       <FormField control={form.control} name="carpet_area" render={({ field }) => (
                           <FormItem>
                               <FormLabel>Carpet Area (sq ft)</FormLabel>
@@ -543,6 +593,18 @@ export default function AddPropertyPage() {
                           </FormItem>
                        )} />
                     }
+                     <FormField control={form.control} name="facing" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Facing</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                                <FormControl><SelectTrigger><SelectValue placeholder="Select direction" /></SelectTrigger></FormControl>
+                                <SelectContent>
+                                    {["East", "West", "North", "South", "NE", "NW", "SE", "SW", "Other"].map(dir => <SelectItem key={dir} value={dir}>{dir}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                     )} />
                     <FormField control={form.control} name="property_age" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Property Age</FormLabel>
@@ -557,6 +619,7 @@ export default function AddPropertyPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
+                    { propertyType !== 'plot' &&
                     <FormField control={form.control} name="parking" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Parking</FormLabel>
@@ -564,6 +627,7 @@ export default function AddPropertyPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
+                    }
                     <FormField control={form.control} name="availability_status" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Availability Status</FormLabel>
@@ -571,22 +635,24 @@ export default function AddPropertyPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
-                    { propertyType !== 'open_plot' &&
-                    <FormField control={form.control} name="approvals" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Approvals</FormLabel>
-                            <FormControl><Input placeholder="e.g., GHMC" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
+                    { propertyType !== 'plot' &&
+                      <FormField control={form.control} name="approvals" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Building Approvals</FormLabel>
+                              <FormControl><Input placeholder="e.g., GHMC" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
                     }
-                    <FormField control={form.control} name="amenities" render={({ field }) => (
-                        <FormItem className="md:col-span-full">
-                            <FormLabel>Amenities (comma separated)</FormLabel>
-                            <FormControl><Input placeholder="e.g., Gym, Swimming Pool, Clubhouse" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
+                    { propertyType !== 'plot' &&
+                      <FormField control={form.control} name="amenities" render={({ field }) => (
+                          <FormItem className="md:col-span-full">
+                              <FormLabel>Amenities (comma separated)</FormLabel>
+                              <FormControl><Input placeholder="e.g., Gym, Swimming Pool, Clubhouse" {...field} value={field.value ?? ""} disabled={isLoading} /></FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
+                    }
                 </CardContent>
             </Card>
 
@@ -616,5 +682,3 @@ export default function AddPropertyPage() {
     </PageContainer>
   );
 }
-
-    
