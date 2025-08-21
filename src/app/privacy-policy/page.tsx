@@ -1,78 +1,66 @@
 
-"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { Github, Linkedin } from "lucide-react";
+import { siteConfig } from "@/config/site";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-import React from "react";
-import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
+export function FounderBio() {
+  const founder = {
+    name: "Vamsi Krishna Kari",
+    title: "Frontend Software Engineer & Founder",
+    photoUrl: "https://avatars.githubusercontent.com/u/46225107?v=4",
+    bio: "I’m Vamsi Krishna Kari, a Frontend Software Engineer from Hyderabad with over 2 years of professional experience and a passion for simplifying user journeys through great UI/UX. Over time, I’ve worked with companies like Claranet and Saven Technologies, where I migrated large-scale apps from Angular to React, optimized web performance, and led component design systems. But more than just code, I believe in building tools that genuinely help people — and that’s what led me to Post My Property.",
+    history: "In late 2024, after witnessing how difficult and intimidating it was for everyday people — especially non-technical property owners — to post, sell, or even get discovered in the real estate ecosystem, I decided to build something different. Something simpler. Bootstrapped entirely on my own savings, I took a break from full-time work and began designing Post My Property — a lightweight, mobile-first platform built with the average seller in mind. I wasn’t backed by a company. I didn’t have a team. But I had a clear goal: make property posting as easy as sending a WhatsApp message.",
+  };
 
-export default function PrivacyPolicyPage() {
-  const [lastUpdated, setLastUpdated] = React.useState('');
-
-  React.useEffect(() => {
-    setLastUpdated(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
-  }, []);
+  const socialLinks = [
+    { href: siteConfig.founderSocialLinks.github, icon: Github, label: "GitHub" },
+    { href: siteConfig.founderSocialLinks.linkedin, icon: Linkedin, label: "LinkedIn" },
+  ];
 
   return (
-    <PageContainer>
-      <Section id="privacy-policy">
-        <SectionTitle>Privacy Policy</SectionTitle>
-        <div className="p-6 max-w-4xl mx-auto leading-relaxed">
-    <h1 className="text-2xl font-bold mb-4">Privacy Policy</h1>
-    <p className="mb-4"><strong>Effective Date:</strong> August 19, 2025</p>
-
-    <h2 className="text-xl font-semibold mt-6">1. Introduction</h2>
-    <p>
-        This Privacy Policy outlines how Vamsiram Enterprises Private Limited and
-        its "Post My Property" Platform collect, use, store, and protect your data.
-        This policy is subject to Indian laws, including the Information
-        Technology Act, 2000, the IT (Reasonable Security Practices and Procedures
-        and Sensitive Personal Data or Information) Rules, 2011, and the
-        principles of the proposed Digital Personal Data Protection Bill, 2023.
-    </p>
-
-    <h2 className="text-xl font-semibold mt-6">2. Information We Collect</h2>
-    <ul className="list-disc list-inside ml-4">
-        <li>Contact Information: Name, email address, and phone number.</li>
-        <li>Property Details: Information you provide about a property, including location, price, and images.</li>
-        <li>RERA Information: Valid RERA registration number for agents and promoters, if applicable.</li>
-        <li>Payment Information: We do not store your credit/debit card details. All payment information is processed by
-            our third-party payment gateway, Razorpay, in a secure manner as per RBI guidelines.</li>
-        <li>Usage Data: Information about how you use the Platform, such as your IP address and device type.</li>
-    </ul>
-
-    <h2 className="text-xl font-semibold mt-6">3. How We Use Your Information</h2>
-    <ul className="list-disc list-inside ml-4">
-        <li>Platform Functioning: To enable you to list properties and manage your account.</li>
-        <li>Lead Management: Once seller/lister property listing is publicly visible, interested buyers can contact
-            seller/lister directly or add your property to their shortlist. The buyers number and name will be visible
-            to seller/lister. When buyer is interested in a property, the lister's (seller's) name and phone number are
-            visible to buyer, allowing for direct communication.</li>
-        <li>Compliance: To comply with legal and regulatory obligations, including verifying RERA compliance.</li>
-        <li>Improvement: To analyze usage trends and improve the Platform.</li>
-    </ul>
-
-    <h2 className="text-xl font-semibold mt-6">4. Data Sharing and Disclosure</h2>
-    <p>We will not sell or rent your personal data to any third party for marketing. We may share your information with:
-    </p>
-    <ul className="list-disc list-inside ml-4">
-        <li>Other Users: Your contact and property details will be visible to other users of this Platform.</li>
-        <li>Third-Party Service Providers: We use third-party services for payment processing (Razorpay), hosting, and
-            analytics. These providers are bound by confidentiality agreements.</li>
-        <li>Legal & Regulatory Authorities: We may disclose your data if required by law or in response to a valid
-            request from government authorities, including RERA, the RBI, or law enforcement.</li>
-    </ul>
-
-    <h2 className="text-xl font-semibold mt-6">5. Data Security</h2>
-    <p>We implement reasonable security practices to protect your data. However, no electronic storage is 100% secure,
-        and we cannot guarantee absolute security.</p>
-
-    <h2 className="text-xl font-semibold mt-6">6. Your Rights</h2>
-    <p>You have the right to access, correct, or delete your personal data. You can manage your information through
-        contacting communication@postmyproperty.in.</p>
-
-    <h2 className="text-xl font-semibold mt-6">7. Policy Revisions</h2>
-    <p>This policy may be updated periodically. The updated policy will be effective upon posting.</p>
-</div>
-      </Section>
-    </PageContainer>
+    <Card className="shadow-xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-primary/10 to-accent/10 p-0">
+        <div className="p-6 text-center">
+          <div className="relative w-36 h-36 mx-auto mb-4 rounded-full overflow-hidden border-4 border-background shadow-lg">
+            <Image
+              src={founder.photoUrl}
+              alt={founder.name}
+              layout="fill"
+              objectFit="cover"
+              priority
+            />
+          </div>
+          <CardTitle className="text-3xl font-bold font-headline">{founder.name}</CardTitle>
+          <p className="text-primary font-semibold">{founder.title}</p>
+        </div>
+      </CardHeader>
+      <CardContent className="p-6 space-y-6">
+        <div>
+          <h3 className="text-xl font-semibold mb-2 font-headline">About Me</h3>
+          <p className="text-muted-foreground whitespace-pre-line">{founder.bio}</p>
+        </div>
+        <div>
+          <h3 className="text-xl font-semibold mb-2 font-headline">My Journey</h3>
+          <p className="text-muted-foreground whitespace-pre-line">{founder.history}</p>
+        </div>
+        {socialLinks.length > 0 && (
+          <div className="text-center pt-4 border-t">
+            <h3 className="text-lg font-semibold mb-3 font-headline">Connect with me</h3>
+            <div className="flex justify-center space-x-4">
+              {socialLinks.map((link) => (
+                <Button key={link.label} variant="outline" size="icon" asChild className="rounded-full hover:bg-accent/10 hover:text-accent">
+                  <Link href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.label}>
+                    <link.icon className="h-5 w-5" />
+                  </Link>
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
