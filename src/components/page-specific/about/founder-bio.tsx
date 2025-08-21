@@ -17,7 +17,7 @@ export function FounderBio() {
 
   const socialLinks = [
     { href: siteConfig.founderSocialLinks.github, icon: Github, label: "GitHub" },
-    { href: site a.founderSocialLinks.linkedin, icon: Linkedin, label: "LinkedIn" },
+    { href: siteConfig.founderSocialLinks.linkedin, icon: Linkedin, label: "LinkedIn" },
   ];
 
   return (
