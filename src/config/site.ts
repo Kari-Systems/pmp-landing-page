@@ -27,7 +27,7 @@ export const siteConfig: SiteConfig = {
     { title: "Features", href: "/features" },
     { title: "Status", href: "/status" },
     { title: "About", href: "/about" },
-    { title: "AI Responder", href: "/ai-responder" },
+    // { title: "AI Responder", href: "/ai-responder" },
   ],
   founderSocialLinks: {
     github: "https://github.com/vamsee9",

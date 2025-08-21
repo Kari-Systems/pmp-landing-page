@@ -1,4 +1,3 @@
-
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
@@ -38,7 +37,7 @@ export default function AboutPage() {
          <p className="text-center text-xl text-muted-foreground -mt-8 mb-8 max-w-3xl mx-auto">
           Designed for Hyderabad by a local engineer, our app cuts out middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message. We're building a scalable business with strong profit potential.
         </p>
-        <AnimatedScrollArrow className="text-center mb-12" />
+        <AnimatedScrollArrow className="text-center" />
       </Section>
 
       <Section id="company-overview">
@@ -67,26 +66,9 @@ export default function AboutPage() {
           </div>
           <div className="space-y-8">
             <Card className="shadow-lg">
-              <CardHeader>
-                <div className="flex items-center gap-2 mb-1">
-                  <DollarSign className="h-7 w-7 text-primary" />
-                  <CardTitle className="font-headline">Capital &amp; Contact</CardTitle>
-                </div>
-                <CardDescription>We're seeking early-stage capital and strategic partnerships.</CardDescription>
-              </CardHeader>
+              
               <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-semibold text-lg mb-1">Capital Goals: Rs. 12–15 Lakhs INR (~$15K–$18K USD)</h4>
-                  <p className="text-muted-foreground text-sm mb-2">Use of Funds:</p>
-                  <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
-                    <li>Marketing & launch campaign in Hyderabad</li>
-                    <li>Map-based feature development</li>
-                    <li>Agent onboarding platform</li>
-                    <li>Dedicated web interface (responsive + dashboard)</li>
-                    <li>Team hiring (1–2 dev/design interns)</li>
-                  </ul>
-                </div>
-                <hr className="my-4"/>
+                <div className="my-4" />
                 <div>
                   <h4 className="font-semibold text-lg mb-2">Get in Touch:</h4>
                   <div className="space-y-1.5">
@@ -100,7 +82,7 @@ export default function AboutPage() {
                     </div>
                      <div className="flex items-center gap-2 text-muted-foreground">
                       <Mail className="h-4 w-4 flex-shrink-0" />
-                      <a href="mailto:vamsikrishna481998@gmail.com" className="hover:text-primary text-sm">vamsikrishna481998@gmail.com (Developer)</a>
+                      <a href="mailto:communication@postmyproperty.in" className="hover:text-primary text-sm">communication@postmyproperty.in (info / communication)</a>
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <MapPin className="h-4 w-4 flex-shrink-0" />
@@ -111,7 +93,7 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg">
+            {/* <Card className="shadow-lg">
               <CardHeader>
                 <div className="flex items-center gap-2 mb-1">
                   <TrendingUp className="h-7 w-7 text-primary" />
@@ -142,9 +124,9 @@ export default function AboutPage() {
                   Your investment will directly fuel strategic marketing and feature development, accelerating user adoption and solidifying our market position for substantial long-term returns.
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card className="shadow-lg">
+            {/* <Card className="shadow-lg">
                <CardHeader>
                 <div className="flex items-center gap-2">
                    <Rocket className="h-6 w-6 text-primary" />
@@ -181,7 +163,7 @@ export default function AboutPage() {
                   </p>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </Section>

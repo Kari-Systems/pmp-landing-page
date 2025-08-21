@@ -15,41 +15,63 @@ export default function PrivacyPolicyPage() {
     <PageContainer>
       <Section id="privacy-policy">
         <SectionTitle>Privacy Policy</SectionTitle>
-        <div className="prose dark:prose-invert max-w-none mx-auto">
-          {lastUpdated && <p>Last updated: {lastUpdated}</p>}
-          
-          <h2>1. Introduction</h2>
-          <p>Welcome to Post My Property (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us at communication@postmyproperty.in.</p>
+        <div className="p-6 max-w-4xl mx-auto leading-relaxed">
+    <h1 className="text-2xl font-bold mb-4">Privacy Policy</h1>
+    <p className="mb-4"><strong>Effective Date:</strong> August 19, 2025</p>
 
-          <h2>2. Information We Collect</h2>
-          <p>We collect personal information that you voluntarily provide to us when you register on the website, express an interest in obtaining information about us or our products and services, when you participate in activities on the website or otherwise when you contact us.</p>
-          <p>The personal information that we collect depends on the context of your interactions with us and the website, the choices you make and the products and features you use. The personal information we collect may include the following: names; phone numbers; email addresses; mailing addresses; job titles; usernames; passwords; contact preferences; contact or authentication data; billing addresses; debit/credit card numbers; and other similar information.</p>
+    <h2 className="text-xl font-semibold mt-6">1. Introduction</h2>
+    <p>
+        This Privacy Policy outlines how Vamsiram Enterprises Private Limited and
+        its "Post My Property" Platform collect, use, store, and protect your data.
+        This policy is subject to Indian laws, including the Information
+        Technology Act, 2000, the IT (Reasonable Security Practices and Procedures
+        and Sensitive Personal Data or Information) Rules, 2011, and the
+        principles of the proposed Digital Personal Data Protection Bill, 2023.
+    </p>
 
-          <h2>3. How We Use Your Information</h2>
-          <p>We use personal information collected via our website for a variety of business purposes described below. We process your personal information for these purposes in reliance on our legitimate business interests, in order to enter into or perform a contract with you, with your consent, and/or for compliance with our legal obligations.</p>
-          
-          <h2>4. Will Your Information Be Shared With Anyone?</h2>
-          <p>We only share information with your consent, to comply with laws, to provide you with services, to protect your rights, or to fulfill business obligations.</p>
+    <h2 className="text-xl font-semibold mt-6">2. Information We Collect</h2>
+    <ul className="list-disc list-inside ml-4">
+        <li>Contact Information: Name, email address, and phone number.</li>
+        <li>Property Details: Information you provide about a property, including location, price, and images.</li>
+        <li>RERA Information: Valid RERA registration number for agents and promoters, if applicable.</li>
+        <li>Payment Information: We do not store your credit/debit card details. All payment information is processed by
+            our third-party payment gateway, Razorpay, in a secure manner as per RBI guidelines.</li>
+        <li>Usage Data: Information about how you use the Platform, such as your IP address and device type.</li>
+    </ul>
 
-          <h2>5. How Long Do We Keep Your Information?</h2>
-          <p>We keep your information for as long as necessary to fulfill the purposes outlined in this privacy notice unless otherwise required by law.</p>
+    <h2 className="text-xl font-semibold mt-6">3. How We Use Your Information</h2>
+    <ul className="list-disc list-inside ml-4">
+        <li>Platform Functioning: To enable you to list properties and manage your account.</li>
+        <li>Lead Management: Once seller/lister property listing is publicly visible, interested buyers can contact
+            seller/lister directly or add your property to their shortlist. The buyers number and name will be visible
+            to seller/lister. When buyer is interested in a property, the lister's (seller's) name and phone number are
+            visible to buyer, allowing for direct communication.</li>
+        <li>Compliance: To comply with legal and regulatory obligations, including verifying RERA compliance.</li>
+        <li>Improvement: To analyze usage trends and improve the Platform.</li>
+    </ul>
 
-          <h2>6. How Do We Keep Your Information Safe?</h2>
-          <p>We aim to protect your personal information through a system of organizational and technical security measures.</p>
+    <h2 className="text-xl font-semibold mt-6">4. Data Sharing and Disclosure</h2>
+    <p>We will not sell or rent your personal data to any third party for marketing. We may share your information with:
+    </p>
+    <ul className="list-disc list-inside ml-4">
+        <li>Other Users: Your contact and property details will be visible to other users of this Platform.</li>
+        <li>Third-Party Service Providers: We use third-party services for payment processing (Razorpay), hosting, and
+            analytics. These providers are bound by confidentiality agreements.</li>
+        <li>Legal & Regulatory Authorities: We may disclose your data if required by law or in response to a valid
+            request from government authorities, including RERA, the RBI, or law enforcement.</li>
+    </ul>
 
-          <h2>7. What Are Your Privacy Rights?</h2>
-          <p>In some regions (like the EEA, UK, and Canada), you have certain rights under applicable data protection laws. These may include the right (i) to request access and obtain a copy of your personal information, (ii) to request rectification or erasure; (iii) to restrict the processing of your personal information; and (iv) if applicable, to data portability.</p>
+    <h2 className="text-xl font-semibold mt-6">5. Data Security</h2>
+    <p>We implement reasonable security practices to protect your data. However, no electronic storage is 100% secure,
+        and we cannot guarantee absolute security.</p>
 
-          <h2>8. Controls for Do-Not-Track Features</h2>
-          <p>Most web browsers and some mobile operating systems and mobile applications include a Do-Not-Track (&quot;DNT&quot;) feature or setting you can activate to signal your privacy preference not to have data about your online browsing activities monitored and collected. At this stage no uniform technology standard for recognizing and implementing DNT signals has been finalized. As such, we do not currently respond to DNT browser signals or any other mechanism that automatically communicates your choice not to be tracked online.</p>
-          
-          <h2>9. Updates to This Notice</h2>
-          <p>We may update this privacy notice from time to time. The updated version will be indicated by an updated &quot;Revised&quot; date and the updated version will be effective as soon as it is accessible. We encourage you to review this privacy notice frequently to be informed of how we are protecting your information.</p>
+    <h2 className="text-xl font-semibold mt-6">6. Your Rights</h2>
+    <p>You have the right to access, correct, or delete your personal data. You can manage your information through
+        contacting communication@postmyproperty.in.</p>
 
-          <h2>10. How Can You Contact Us About This Notice?</h2>
-          <p>If you have questions or comments about this notice, you may email us at communication@postmyproperty.in or by post to:</p>
-          <p>Post My Property<br/>Hyderabad<br/>Telangana, 500085<br/>India</p>
-        </div>
+    <h2 className="text-xl font-semibold mt-6">7. Policy Revisions</h2>
+    <p>This policy may be updated periodically. The updated policy will be effective upon posting.</p>
+</div>
       </Section>
     </PageContainer>
   );

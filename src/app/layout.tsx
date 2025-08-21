@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { siteConfig } from '@/config/site';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { PageTransition } from '@/components/layout/page-transition';
-import { AddPropertyCtaButton } from '@/components/shared/add-property-cta-button';
+// import { AddPropertyCtaButton } from '@/components/shared/add-property-cta-button';
 
 export const metadata: Metadata = {
   title: {
@@ -73,7 +73,6 @@ export default function RootLayout({
             <AppFooter />
           </div>
           <Toaster />
-          <AddPropertyCtaButton />
         </ThemeProvider>
       </body>
     </html>
