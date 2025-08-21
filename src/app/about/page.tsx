@@ -1,6 +1,6 @@
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
-// import { FounderBio } from "@/components/page-specific/about/founder-bio";
-// import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
+import { FounderBio } from "@/components/page-specific/about/founder-bio";
+import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
@@ -35,7 +35,7 @@ export default function AboutPage() {
       <Section id="about-summary"> {/* Removed custom top padding to use Section default */}
         <SectionTitle>Post My Property: Minimal, Fast, Affordable.</SectionTitle>
          <p className="text-center text-xl text-muted-foreground -mt-8 mb-8 max-w-3xl mx-auto">
-          Designed for Hyderabad by a local engineer, our app cuts out middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message. We're building a scalable business with strong profit potential.
+          Designed for Hyderabad by a local engineer, our app cuts out the middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message. We're building a scalable business with strong profit potential.
         </p>
         <AnimatedScrollArrow className="text-center" />
       </Section>
@@ -92,78 +92,6 @@ export default function AboutPage() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* <Card className="shadow-lg">
-              <CardHeader>
-                <div className="flex items-center gap-2 mb-1">
-                  <TrendingUp className="h-7 w-7 text-primary" />
-                  <CardTitle className="font-headline">Investor Value &amp; Profitability</CardTitle>
-                </div>
-                <CardDescription>A lean, scalable model targeting a high-growth market for attractive returns.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm text-muted-foreground">
-                <p>
-                  Post My Property offers a compelling investment opportunity driven by a lean operational model and a clear path to profitability. Our affordable subscription (starting at just Rs. 200/month) is designed to attract a high volume of users within Hyderabad's booming real estate sector.
-                </p>
-                <p className="font-semibold text-foreground/90">Key drivers for investor returns:</p>
-                <ul className="list-disc list-inside space-y-1.5 pl-4">
-                  <li>
-                    <strong>Scalable Revenue Model:</strong> Low customer acquisition cost coupled with recurring subscription revenue creates a strong foundation for exponential growth.
-                  </li>
-                  <li>
-                    <strong>Large Addressable Market:</strong> Hyderabad's dynamic property market presents a vast pool of potential users.
-                  </li>
-                  <li>
-                    <strong>Low Operational Overheads:</strong> Our efficient tech stack and streamlined processes ensure cost-effectiveness, maximizing profit margins as we scale.
-                  </li>
-                  <li>
-                    <strong>Future Monetization:</strong> Beyond subscriptions, we envision future revenue streams through premium listings, agent partnerships, and value-added services.
-                  </li>
-                </ul>
-                <p className="font-semibold text-foreground pt-1">
-                  Your investment will directly fuel strategic marketing and feature development, accelerating user adoption and solidifying our market position for substantial long-term returns.
-                </p>
-              </CardContent>
-            </Card> */}
-
-            {/* <Card className="shadow-lg">
-               <CardHeader>
-                <div className="flex items-center gap-2">
-                   <Rocket className="h-6 w-6 text-primary" />
-                  <CardTitle className="font-headline">Built for Growth: Our Technology</CardTitle>
-                </div>
-                 <CardDescription>Engineered for speed, scale, and a seamless user experience, paving the way for market leadership.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                <div>
-                  <div className="flex items-start gap-3 mb-1">
-                    <Smartphone className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                    <h4 className="font-semibold text-md">Intuitive Mobile-First Platform</h4>
-                  </div>
-                  <p className="text-muted-foreground text-sm ml-[36px]">
-                    Our core application is a user-friendly mobile platform, making property listing effortless. Non-technical users will find it remarkably simple, while the underlying modern, cross-platform technology (Flutter) ensures wide reach, rapid development, and a native-like experience.
-                  </p>
-                </div>
-                <div>
-                  <div className="flex items-start gap-3 mb-1">
-                    <Server className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                    <h4 className="font-semibold text-md">Scalable & Secure Backend</h4>
-                  </div>
-                  <p className="text-muted-foreground text-sm ml-[36px]">
-                    The engine of Post My Property is built for growth using robust and proven technologies (Django/Python, PostgreSQL). It's designed for high performance and strong security, protecting user data and ensuring reliable service as we expand.
-                  </p>
-                </div>
-                <div>
-                  <div className="flex items-start gap-3 mb-1">
-                    <Cloud className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-                    <h4 className="font-semibold text-md">Reliable Cloud Infrastructure</h4>
-                  </div>
-                  <p className="text-muted-foreground text-sm ml-[36px]">
-                    We operate on dependable cloud infrastructure (DigitalOcean, Firebase), guaranteeing high availability and consistent performance, ensuring the platform is always accessible and can scale with user demand.
-                  </p>
-                </div>
-              </CardContent>
-            </Card> */}
           </div>
         </div>
       </Section>
