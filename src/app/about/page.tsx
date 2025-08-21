@@ -1,6 +1,6 @@
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
-import { FounderBio } from "@/components/page-specific/about/founder-bio";
-import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
+// import { FounderBio } from "@/components/page-specific/about/founder-bio";
+// import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, Eye, Lightbulb, Phone, Mail, DollarSign, MapPin, Rocket, Smartphone, Server, Cloud, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
