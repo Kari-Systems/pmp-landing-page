@@ -1,3 +1,4 @@
+
 import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 import { FounderBio } from "@/components/page-specific/about/founder-bio";
 import { InvestorContactForm } from "@/components/page-specific/about/investor-contact-form";
@@ -32,7 +33,7 @@ const companyInfo = [
 export default function AboutPage() {
   return (
     <PageContainer>
-      <Section id="about-summary"> {/* Removed custom top padding to use Section default */}
+      <Section id="about-summary">
         <SectionTitle>Post My Property: Minimal, Fast, Affordable.</SectionTitle>
          <p className="text-center text-xl text-muted-foreground -mt-8 mb-8 max-w-3xl mx-auto">
           Designed for Hyderabad by a local engineer, our app cuts out the middlemen, tech bloat, and complex flows, making property listing as easy as sending a WhatsApp message. We're building a scalable business with strong profit potential.

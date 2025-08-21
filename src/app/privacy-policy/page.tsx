@@ -1,66 +1,117 @@
 
-import Image from "next/image";
-import Link from "next/link";
-import { Github, Linkedin } from "lucide-react";
-import { siteConfig } from "@/config/site";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+"use client";
 
-export function FounderBio() {
-  const founder = {
-    name: "Vamsi Krishna Kari",
-    title: "Frontend Software Engineer & Founder",
-    photoUrl: "https://avatars.githubusercontent.com/u/46225107?v=4",
-    bio: "I’m Vamsi Krishna Kari, a Frontend Software Engineer from Hyderabad with over 2 years of professional experience and a passion for simplifying user journeys through great UI/UX. Over time, I’ve worked with companies like Claranet and Saven Technologies, where I migrated large-scale apps from Angular to React, optimized web performance, and led component design systems. But more than just code, I believe in building tools that genuinely help people — and that’s what led me to Post My Property.",
-    history: "In late 2024, after witnessing how difficult and intimidating it was for everyday people — especially non-technical property owners — to post, sell, or even get discovered in the real estate ecosystem, I decided to build something different. Something simpler. Bootstrapped entirely on my own savings, I took a break from full-time work and began designing Post My Property — a lightweight, mobile-first platform built with the average seller in mind. I wasn’t backed by a company. I didn’t have a team. But I had a clear goal: make property posting as easy as sending a WhatsApp message.",
-  };
+import React from "react";
+import { PageContainer, Section, SectionTitle } from "@/components/layout/page-container";
 
-  const socialLinks = [
-    { href: siteConfig.founderSocialLinks.github, icon: Github, label: "GitHub" },
-    { href: siteConfig.founderSocialLinks.linkedin, icon: Linkedin, label: "LinkedIn" },
-  ];
+export default function PrivacyPolicyPage() {
+  const [lastUpdated, setLastUpdated] = React.useState('');
+
+  React.useEffect(() => {
+    setLastUpdated(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  }, []);
 
   return (
-    <Card className="shadow-xl overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-primary/10 to-accent/10 p-0">
-        <div className="p-6 text-center">
-          <div className="relative w-36 h-36 mx-auto mb-4 rounded-full overflow-hidden border-4 border-background shadow-lg">
-            <Image
-              src={founder.photoUrl}
-              alt={founder.name}
-              layout="fill"
-              objectFit="cover"
-              priority
-            />
-          </div>
-          <CardTitle className="text-3xl font-bold font-headline">{founder.name}</CardTitle>
-          <p className="text-primary font-semibold">{founder.title}</p>
+    <PageContainer>
+      <Section id="privacy-policy">
+        <SectionTitle>Privacy Policy</SectionTitle>
+        <div className="prose dark:prose-invert max-w-4xl mx-auto">
+          <p>
+            <strong>Last updated:</strong> {lastUpdated}
+          </p>
+
+          <h2>1. Introduction</h2>
+          <p>
+            Welcome to Post My Property. We are committed to protecting your
+            privacy. This Privacy Policy explains how we collect, use, disclose,
+            and safeguard your information when you use our mobile application and
+            website (collectively, the "Platform").
+          </p>
+
+          <h2>2. Information We Collect</h2>
+          <p>
+            We may collect information about you in a variety of ways. The
+            information we may collect on the Platform includes:
+          </p>
+          <ul>
+            <li>
+              <strong>Personal Data:</strong> Personally identifiable
+              information, such as your name, shipping address, email address,
+              and telephone number, and demographic information, such as your
+              age, gender, hometown, and interests, that you voluntarily give to
+              us when you register with the Platform or when you choose to
+              participate in various activities related to the Platform, such as
+              online chat and message boards.
+            </li>
+            <li>
+              <strong>Derivative Data:</strong> Information our servers
+              automatically collect when you access the Platform, such as your
+              IP address, your browser type, your operating system, your access
+              times, and the pages you have viewed directly before and after
+              accessing the Platform.
+            </li>
+          </ul>
+
+          <h2>3. Use of Your Information</h2>
+          <p>
+            Having accurate information about you permits us to provide you with
+            a smooth, efficient, and customized experience. Specifically, we may
+            use information collected about you via the Platform to:
+          </p>
+          <ul>
+            <li>Create and manage your account.</li>
+            <li>
+              Email you regarding your account or order.
+            </li>
+            <li>
+              Enable user-to-user communications.
+            </li>
+            <li>
+              Generate a personal profile about you to make future visits to the
+              Platform more personalized.
+            </li>
+          </ul>
+
+          <h2>4. Disclosure of Your Information</h2>
+          <p>
+            We may share information we have collected about you in certain
+            situations. Your information may be disclosed as follows:
+          </p>
+          <ul>
+            <li>
+              <strong>By Law or to Protect Rights:</strong> If we believe the
+              release of information about you is necessary to respond to legal
+              process, to investigate or remedy potential violations of our
+              policies, or to protect the rights, property, and safety of
+              others, we may share your information as permitted or required by
+              any applicable law, rule, or regulation.
+            </li>
+            <li>
+              <strong>Third-Party Service Providers:</strong> We may share your
+              information with third parties that perform services for us or on
+              our behalf, including payment processing, data analysis, email
+              delivery, hosting services, customer service, and marketing
+              assistance.
+            </li>
+          </ul>
+
+          <h2>5. Security of Your Information</h2>
+          <p>
+            We use administrative, technical, and physical security measures to
+            help protect your personal information. While we have taken
+            reasonable steps to secure the personal information you provide to
+            us, please be aware that despite our efforts, no security measures
+            are perfect or impenetrable, and no method of data transmission can
+            be guaranteed against any interception or other type of misuse.
+          </p>
+
+          <h2>6. Contact Us</h2>
+          <p>
+            If you have questions or comments about this Privacy Policy, please
+            contact us at: privacy@postmyproperty.in
+          </p>
         </div>
-      </CardHeader>
-      <CardContent className="p-6 space-y-6">
-        <div>
-          <h3 className="text-xl font-semibold mb-2 font-headline">About Me</h3>
-          <p className="text-muted-foreground whitespace-pre-line">{founder.bio}</p>
-        </div>
-        <div>
-          <h3 className="text-xl font-semibold mb-2 font-headline">My Journey</h3>
-          <p className="text-muted-foreground whitespace-pre-line">{founder.history}</p>
-        </div>
-        {socialLinks.length > 0 && (
-          <div className="text-center pt-4 border-t">
-            <h3 className="text-lg font-semibold mb-3 font-headline">Connect with me</h3>
-            <div className="flex justify-center space-x-4">
-              {socialLinks.map((link) => (
-                <Button key={link.label} variant="outline" size="icon" asChild className="rounded-full hover:bg-accent/10 hover:text-accent">
-                  <Link href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.label}>
-                    <link.icon className="h-5 w-5" />
-                  </Link>
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      </Section>
+    </PageContainer>
   );
 }
